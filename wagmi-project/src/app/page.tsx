@@ -66,35 +66,38 @@ function App() {
 
     return (
         <div>
-            {account.status === 'connected'
-                ?
-                <>
-                    <h2>Данные об аккаунте</h2>
-                    <div>
-                        статус: {account.status}
-                        <br/>
-                        адрес(-а): {JSON.stringify(account.addresses)}
-                        <br/>
-                        chainId: {account.chainId}
-                    </div>
-
-                    {account.status === 'connected' && (
-                        <button type="button" onClick={() => onSignOut()}>
-                            Выйти
-                        </button>
-                    )}
-                </>
-                :
-                <><h2>Авторизоваться через</h2>
+            {account.status !== 'connected'
+                &&
+                <div style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    width: "40%",
+                    margin: "17rem auto 0 auto",
+                    gap: "1rem"
+                }}>
                     {connectors.map((connector) => (
                         <button
+                            style={{
+                                borderRadius: '25px',
+                                backgroundColor: '#51a8ef',
+                                color: 'white',
+                                padding: '10px 20px',
+                                border: 'none',
+                                cursor: 'pointer',
+                                fontSize: '16px',
+                                fontWeight: 'bold',
+                                transition: 'background-color 0.3s ease',
+                            }}
+                            onMouseOver={(e) => e.currentTarget.style.backgroundColor = '#4795d5'}
+                            onMouseOut={(e) => e.currentTarget.style.backgroundColor = '#51a8ef'}
                             key={connector.uid}
                             onClick={() => onSignIn({connector: {connector}})}
                             type="button"
                         >
-                            {connector.name}
+                            Войти через {connector.name}
                         </button>
-                    ))}</>
+                    ))}
+                </div>
             }
         </div>
     )
