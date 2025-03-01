@@ -71,9 +71,10 @@ function App() {
                 <div style={{
                     display: "flex",
                     flexDirection: "column",
-                    width: "40%",
+                    width: "fit-content",
                     margin: "17rem auto 0 auto",
-                    gap: "1rem"
+                    gap: "1rem",
+                    alignItems: "stretch",
                 }}>
                     {connectors.map((connector) => (
                         <button
@@ -87,6 +88,8 @@ function App() {
                                 fontSize: '16px',
                                 fontWeight: 'bold',
                                 transition: 'background-color 0.3s ease',
+                                width: '100%',
+                                textAlign: 'center',
                             }}
                             onMouseOver={(e) => e.currentTarget.style.backgroundColor = '#4795d5'}
                             onMouseOut={(e) => e.currentTarget.style.backgroundColor = '#51a8ef'}
