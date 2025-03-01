@@ -24,13 +24,13 @@ function App() {
             };
 
             sendAccountToBackend(accountData)
-            .then(() => window.location.href = 'http://horniverse.ai/game');
+            .then(() => window.location.href = 'https://horniverse.ai/game');
         }
     }, [account.status]);
 
     const sendAccountToBackend = async (accountData: AccountData) => {
         try {
-            const response = await fetch('http://horniverse.ai/game/wallet-login', {
+            const response = await fetch('https://horniverse.ai/game/wallet-login', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
