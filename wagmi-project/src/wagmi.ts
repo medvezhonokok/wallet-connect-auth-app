@@ -1,12 +1,13 @@
 import {http, cookieStorage, createConfig, createStorage} from 'wagmi'
 import {mainnet, sepolia} from 'wagmi/chains'
-import {coinbaseWallet, injected, walletConnect} from 'wagmi/connectors'
+import {coinbaseWallet, injected, walletConnect, metaMask} from 'wagmi/connectors'
 
 export function getConfig() {
     return createConfig({
         chains: [mainnet, sepolia],
         connectors: [
             walletConnect({projectId: '38b01666267679af3b51542eee4e9d64'}),
+            metaMask()
         ],
         storage: createStorage({
             storage: cookieStorage,
@@ -16,6 +17,7 @@ export function getConfig() {
             [mainnet.id]: http(),
             [sepolia.id]: http(),
         },
+        onError: console.info
     })
 }
 

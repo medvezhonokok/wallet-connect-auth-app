@@ -1,6 +1,7 @@
 'use client'
 
-import {Connector, useAccount, useConnect, useDisconnect} from 'wagmi'
+import {Connector, useAccount, useConnect, useDisconnect} from 'wagmi';
+import {Loader} from './Loader';
 import {useEffect} from "react";
 
 interface AccountData {
@@ -9,11 +10,41 @@ interface AccountData {
     chainId: number;
 }
 
-function App() {
+const Connectors = ({connectors, handleClick}) => {
+    return (<>
+        {connectors.map((connector) => (
+            <button
+                style={{
+                    borderRadius: '25px',
+                    backgroundColor: '#51a8ef',
+                    color: 'white',
+                    padding: '10px 20px',
+                    border: 'none',
+                    cursor: 'pointer',
+                    fontSize: '16px',
+                    fontWeight: 'bold',
+                    transition: 'background-color 0.3s ease',
+                    width: '100%',
+                    textAlign: 'center',
+                }}
+                onMouseOver={(e) => e.currentTarget.style.backgroundColor = '#4795d5'}
+                onMouseOut={(e) => e.currentTarget.style.backgroundColor = '#51a8ef'}
+                key={connector.uid}
+                onClick={() => handleClick(({connector: {connector}}))}
+                type="button"
+            >
+                Войти через {connector.name}
+            </button>
+        ))}
+    </>)
+}
 
+function App() {
     const account = useAccount()
-    const {connectors, connect} = useConnect()
+    const {connectors, connect, connectAsync, isPending} = useConnect();
     const {disconnect} = useDisconnect()
+
+    const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
 
     useEffect(() => {
         if (account.status === 'connected') {
@@ -24,13 +55,13 @@ function App() {
             };
 
             sendAccountToBackend(accountData)
-            .then(() => window.location.href = 'https://horniverse.ai/game');
+            .then(() => window.location.href = `${backendUrl}/game`);
         }
     }, [account.status]);
 
     const sendAccountToBackend = async (accountData: AccountData) => {
         try {
-            const response = await fetch('https://horniverse.ai/game/wallet-login', {
+            const response = await fetch(`${backendUrl}/game/wallet-login`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -46,13 +77,13 @@ function App() {
         }
     };
 
-    const onSignIn = async ({connector}: { connector: any }) => {
+    const onSignIn = ({connector}: { connector: any }) => {
         try {
-            await connect(connector);
+            connect(connector);
 
             console.log(account);
         } catch (err) {
-            console.error(err);
+            console.info(err);
         }
     }
 
@@ -65,44 +96,21 @@ function App() {
     }
 
     return (
-        <div>
+        <>
             {account.status !== 'connected'
                 &&
                 <div style={{
                     display: "flex",
                     flexDirection: "column",
                     width: "fit-content",
-                    margin: "17rem auto 0 auto",
                     gap: "1rem",
                     alignItems: "stretch",
                 }}>
-                    {connectors.map((connector) => (
-                        <button
-                            style={{
-                                borderRadius: '25px',
-                                backgroundColor: '#51a8ef',
-                                color: 'white',
-                                padding: '10px 20px',
-                                border: 'none',
-                                cursor: 'pointer',
-                                fontSize: '16px',
-                                fontWeight: 'bold',
-                                transition: 'background-color 0.3s ease',
-                                width: '100%',
-                                textAlign: 'center',
-                            }}
-                            onMouseOver={(e) => e.currentTarget.style.backgroundColor = '#4795d5'}
-                            onMouseOut={(e) => e.currentTarget.style.backgroundColor = '#51a8ef'}
-                            key={connector.uid}
-                            onClick={() => onSignIn({connector: {connector}})}
-                            type="button"
-                        >
-                            Войти через {connector.name}
-                        </button>
-                    ))}
+                    <Connectors connectors={connectors} handleClick={onSignIn}/>
+                    {isPending && <Loader/>}
                 </div>
             }
-        </div>
+        </>
     )
 }
 
