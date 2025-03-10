@@ -6,6 +6,7 @@ const SOLANA_RPC = process.env.SOLANA_RPC!;
 const OWNER_PRIVATE_KEY = process.env.OWNER_PRIVATE_KEY!;
 const TOKEN_MINT = new PublicKey(process.env.TOKEN_MINT!); // Адрес токена
 const SMART_CONTRACT_WALLET = new PublicKey(process.env.SMART_CONTRACT_WALLET!); // Кошелек смарт-контракта
+const BACKEND_API_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
 
 const getTokenPrice = async (): Promise<number> => {
     const tokenMint = process.env.NEXT_PUBLIC_TOKEN_MINT
@@ -55,6 +56,22 @@ export async function POST(req: NextRequest) {
         );
 
         const signature = await sendAndConfirmTransaction(connection, transaction, [ownerKeypair]);
+
+        const response = await fetch(`${BACKEND_API_URL}/game/user/add_coins`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                userAddress,
+                tokens: tokens, // Количество токенов для покупки
+            }),
+        });
+
+        if (!response.ok) {
+            console.error('Failed to add coins on backend:', response.statusText);
+            return NextResponse.json({ error: 'Failed to update user coins' }, { status: 500 });
+        }
 
         return NextResponse.json({ success: true, signature });
     } catch (error) {

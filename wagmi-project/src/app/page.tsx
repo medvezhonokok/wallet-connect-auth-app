@@ -72,12 +72,12 @@ const IndexPage = () => {
             };
 
             sendWagmiAccountToBackend(accountData)
-            .then(() => window.location.href = `${backendUrl}/game`);
+            .then(() => window.location.href = `${backendUrl}`);
         }
 
         if (connected && publicKey) {
             sendAccountToBackend(publicKey.toBase58()).then(() => {
-                window.location.href = `${backendUrl}/game`;
+                window.location.href = `${backendUrl}`;
             });
         }
     }, [account.status, connected, publicKey]);
@@ -109,10 +109,10 @@ const IndexPage = () => {
                     gap: "1rem",
                     alignItems: "stretch",
                 }}>
-                    <Connectors connectors={connectors} handleClick={onSignIn}/>
                     <div className="child_button">
-                        <WalletMultiButton>Login by Other</WalletMultiButton>
+                        <WalletMultiButton>Login by Solana Wallet</WalletMultiButton>
                     </div>
+                    <Connectors connectors={connectors} handleClick={onSignIn}/>
                     {(isPending || connecting) && <Loader/>}
                 </div>
             }
