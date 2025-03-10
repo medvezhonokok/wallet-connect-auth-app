@@ -2,5 +2,6 @@
 const nextConfig = {}
 
 module.exports = {
-    // output: 'export'
+    basePath: '/wallet',
+    trailingSlash: true,
 };
