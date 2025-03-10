@@ -9,7 +9,7 @@ const SMART_CONTRACT_WALLET = new PublicKey(process.env.SMART_CONTRACT_WALLET!);
 const BACKEND_API_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
 
 const getTokenPrice = async (): Promise<number> => {
-    const tokenMint = process.env.NEXT_PUBLIC_TOKEN_MINT
+    const tokenAddress = process.env.NEXT_PUBLIC_TOKEN_MINT
     const url = `https://api.coingecko.com/api/v3/simple/token_price/solana?contract_addresses=${tokenAddress}&vs_currencies=usd`;
 
     try {
@@ -57,7 +57,7 @@ export async function POST(req: NextRequest) {
 
         const signature = await sendAndConfirmTransaction(connection, transaction, [ownerKeypair]);
 
-        const response = await fetch(`${BACKEND_API_URL}/game/user/add_coins`, {
+        const response = await fetch(`${BACKEND_API_URL}/user/add_coins`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

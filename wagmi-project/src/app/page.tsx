@@ -39,7 +39,7 @@ const sendAccountToBackend = async (publicKey: string) => {
 };
 const sendWagmiAccountToBackend = async (accountData) => {
     try {
-        const response = await fetch(`${backendUrl}/game/wallet-login`, {
+        const response = await fetch(`${backendUrl}/wallet-login`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
