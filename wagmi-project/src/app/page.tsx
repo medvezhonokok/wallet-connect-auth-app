@@ -1,81 +1,86 @@
-'use client'
+'use client';
 
-import {Connector, useAccount, useConnect, useDisconnect} from 'wagmi';
-import {Loader} from './Loader';
-import {useEffect} from "react";
+import {useWallet} from '@solana/wallet-adapter-react';
+import {useEffect} from 'react';
+import {WalletMultiButton} from '@solana/wallet-adapter-react-ui';
+import {Loader} from '@/components/Loader';
+import {useAccount, useConnect, useDisconnect} from "wagmi";
+import {Connectors} from '@/components/Connector'
 
-interface AccountData {
-    status: string;
-    addresses: readonly string[];
-    chainId: number;
-}
+const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
 
-const Connectors = ({connectors, handleClick}) => {
-    return (<>
-        {connectors.map((connector) => (
-            <button
-                style={{
-                    borderRadius: '25px',
-                    backgroundColor: '#51a8ef',
-                    color: 'white',
-                    padding: '10px 20px',
-                    border: 'none',
-                    cursor: 'pointer',
-                    fontSize: '16px',
-                    fontWeight: 'bold',
-                    transition: 'background-color 0.3s ease',
-                    width: '100%',
-                    textAlign: 'center',
-                }}
-                onMouseOver={(e) => e.currentTarget.style.backgroundColor = '#4795d5'}
-                onMouseOut={(e) => e.currentTarget.style.backgroundColor = '#51a8ef'}
-                key={connector.uid}
-                onClick={() => handleClick(({connector: {connector}}))}
-                type="button"
-            >
-                Войти через {connector.name}
-            </button>
-        ))}
-    </>)
-}
+const sendAccountToBackend = async (publicKey: string) => {
+    const accountData = {
+        status: "connected",
+        addresses: [publicKey], // Solana publicKey в формате Ethereum-адресов
+        chainId: 1 // Можно оставить заглушку, так как в Solana нет chainId
+    };
 
-function App() {
-    const account = useAccount()
-    const {connectors, connect, connectAsync, isPending} = useConnect();
-    const {disconnect} = useDisconnect()
+    try {
+        const response = await fetch(`${backendUrl}/wallet-login`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(accountData),
+            credentials: 'include',
+        });
+
+        const result = await response.json();
+
+        if (result.token) {
+            document.cookie = `token=${result.token}; path=/; secure; samesite=strict`;
+        }
+
+        console.log('OK', result);
+    } catch (err) {
+        console.error('Error sending account to backend:', err);
+    }
+};
+const sendWagmiAccountToBackend = async (accountData) => {
+    try {
+        const response = await fetch(`${backendUrl}/game/wallet-login`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(accountData),
+            credentials: 'include'
+        });
+
+        const result = await response.json();
+        console.log('OK', result);
+    } catch (err) {
+        console.error('err', err);
+    }
+};
+
+const IndexPage = () => {
+    const account = useAccount();
+    const {connectors, connect, isPending} = useConnect();
+    const {disconnect} = useDisconnect();
+    const {publicKey, connected, connecting} = useWallet();
 
     const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
 
     useEffect(() => {
         if (account.status === 'connected') {
-            const accountData: AccountData = {
+            const accountData = {
                 status: account.status,
                 addresses: account.addresses,
                 chainId: account.chainId,
             };
 
-            sendAccountToBackend(accountData)
+            sendWagmiAccountToBackend(accountData)
             .then(() => window.location.href = `${backendUrl}/game`);
         }
-    }, [account.status]);
 
-    const sendAccountToBackend = async (accountData: AccountData) => {
-        try {
-            const response = await fetch(`${backendUrl}/game/wallet-login`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(accountData),
-                credentials: 'include'
+        if (connected && publicKey) {
+            sendAccountToBackend(publicKey.toBase58()).then(() => {
+                window.location.href = `${backendUrl}/game`;
             });
-
-            const result = await response.json();
-            console.log('OK', result);
-        } catch (err) {
-            console.error('err', err);
         }
-    };
+    }, [account.status, connected, publicKey]);
 
     const onSignIn = ({connector}: { connector: any }) => {
         try {
@@ -87,17 +92,15 @@ function App() {
         }
     }
 
-    const onSignOut = async () => {
-        try {
-            await disconnect();
-        } catch (err) {
-            console.error(err);
-        }
-    }
-
     return (
-        <>
-            {account.status !== 'connected'
+        <div style={{
+            display: 'flex',
+            flexDirection: 'column',
+            width: 'fit-content',
+            gap: '1rem',
+            alignItems: 'stretch'
+        }}>
+            {account.status !== 'connected' && !connected
                 &&
                 <div style={{
                     display: "flex",
@@ -107,11 +110,14 @@ function App() {
                     alignItems: "stretch",
                 }}>
                     <Connectors connectors={connectors} handleClick={onSignIn}/>
-                    {isPending && <Loader/>}
+                    <div className="child_button">
+                        <WalletMultiButton>Login by Other</WalletMultiButton>
+                    </div>
+                    {(isPending || connecting) && <Loader/>}
                 </div>
             }
-        </>
-    )
-}
+        </div>
+    );
+};
 
-export default App
+export default IndexPage;

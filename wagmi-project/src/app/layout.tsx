@@ -6,25 +6,27 @@ import {type ReactNode} from 'react'
 import {cookieToInitialState} from 'wagmi'
 
 import {getConfig} from '@/wagmi'
-import {Index} from './index'
+import {ClientLayout} from './ClientLayout'
 
 const inter = Inter({subsets: ['latin']})
 
 export const metadata: Metadata = {
-    title: 'WalletConnect Auth App',
-    description: 'todo....',
+    title: 'HorniVerse - $HORN AI - Wallet',
 }
 
-export default function RootLayout(props: { children: ReactNode }) {
+const RootLayout = (props: { children: ReactNode }) => {
     const initialState = cookieToInitialState(
         getConfig(),
         headers().get('cookie'),
     )
+
     return (
         <html lang="en">
         <body className={inter.className}>
-        <Index initialState={initialState}>{props.children}</Index>
+        <ClientLayout initialState={initialState}>{props.children}</ClientLayout>
         </body>
         </html>
     )
-}
+};
+
+export default RootLayout;

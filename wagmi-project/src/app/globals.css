@@ -1,4 +1,4 @@
-html, body{
+html, body {
     height: 100%;
     display: flex;
     justify-content: center;
@@ -35,6 +35,34 @@ html {
 }
 
 @keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+.button, .child_button button {
+    border-radius: 25px;
+    background-color: #51a8ef;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+    width: 100%;
+    height: 40px;
+    text-align: center;
+    justify-content: center;
+}
+
+.button:hover, .child_button button:hover {
+    background-color: #4795d5;
+}
+
+.wallet-adapter-dropdown {
+    width: 100%;
 }
