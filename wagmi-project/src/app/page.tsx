@@ -4,7 +4,7 @@ import {useWallet} from '@solana/wallet-adapter-react';
 import {useEffect} from 'react';
 import {WalletMultiButton} from '@solana/wallet-adapter-react-ui';
 import {Loader} from '@/components/Loader';
-import {useAccount, useConnect, useDisconnect} from "wagmi";
+import {useAccount, useConnect} from "wagmi";
 import {Connectors} from '@/components/Connector'
 
 const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
@@ -58,7 +58,6 @@ const sendWagmiAccountToBackend = async (accountData) => {
 const IndexPage = () => {
     const account = useAccount();
     const {connectors, connect, isPending} = useConnect();
-    const {disconnect} = useDisconnect();
     const {publicKey, connected, connecting} = useWallet();
 
     const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
@@ -72,7 +71,7 @@ const IndexPage = () => {
             };
 
             sendWagmiAccountToBackend(accountData)
-            .then(() => window.location.href = `${backendUrl}`);
+                .then(() => window.location.href = `${backendUrl}`);
         }
 
         if (connected && publicKey) {
@@ -82,9 +81,9 @@ const IndexPage = () => {
         }
     }, [account.status, connected, publicKey]);
 
-    const onSignIn = ({connector}: { connector: any }) => {
+    const onSignIn = (connector) => {
         try {
-            connect(connector);
+            connect({connector});
 
             console.log(account);
         } catch (err) {
