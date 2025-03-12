@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { Connection } from '@solana/web3.js';
 
-const SOLANA_RPC = process.env.SOLANA_RPC!;
+const SOLANA_RPC = process.env.NEXT_PUBLIC_SOLANA_RPC!;
 const BACKEND_API_URL = process.env.NEXT_PUBLIC_BACKEND_URL!;
 const connection = new Connection(SOLANA_RPC, 'confirmed');
 
@@ -27,8 +27,8 @@ export async function POST(req: NextRequest) {
         });
 
         if (!response.ok) {
-            console.error('Failed to add coins on backend:', response.statusText);
-            return NextResponse.json({ error: 'Failed to update user coins' }, { status: 500 });
+            console.error('Failed to add attemps on backend:', response.statusText);
+            return NextResponse.json({ error: 'Failed to update user attemps' }, { status: 500 });
         }
 
         return NextResponse.json({ success: true, signature });

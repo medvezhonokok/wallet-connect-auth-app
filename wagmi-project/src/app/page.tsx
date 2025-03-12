@@ -1,33 +1,29 @@
 'use client';
-
 import {useWallet} from '@solana/wallet-adapter-react';
-import {useEffect} from 'react';
+import {useEffect, useState} from 'react';
 import {WalletMultiButton} from '@solana/wallet-adapter-react-ui';
 import {Loader} from '@/components/Loader';
-import {useAccount, useConnect} from "wagmi";
-import {Connectors} from '@/components/Connector'
+import {Connectors} from '@/components/Connector';
+import {useSearchParams, useRouter} from 'next/navigation';
 
 const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
 
 const sendAccountToBackend = async (publicKey: string) => {
     const accountData = {
         status: "connected",
-        addresses: [publicKey], // Solana publicKey в формате Ethereum-адресов
-        chainId: 1 // Можно оставить заглушку, так как в Solana нет chainId
+        addresses: [publicKey],
+        chainId: 1
     };
 
     try {
         const response = await fetch(`${backendUrl}/wallet-login`, {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
+            headers: {'Content-Type': 'application/json'},
             body: JSON.stringify(accountData),
             credentials: 'include',
         });
 
         const result = await response.json();
-
         if (result.token) {
             document.cookie = `token=${result.token}; path=/; secure; samesite=strict`;
         }
@@ -37,59 +33,39 @@ const sendAccountToBackend = async (publicKey: string) => {
         console.error('Error sending account to backend:', err);
     }
 };
-const sendWagmiAccountToBackend = async (accountData) => {
-    try {
-        const response = await fetch(`${backendUrl}/wallet-login`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(accountData),
-            credentials: 'include'
-        });
-
-        const result = await response.json();
-        console.log('OK', result);
-    } catch (err) {
-        console.error('err', err);
-    }
-};
 
 const IndexPage = () => {
-    const account = useAccount();
-    const {connectors, connect, isPending} = useConnect();
-    const {publicKey, connected, connecting} = useWallet();
+    const searchParams = useSearchParams();
+    const {publicKey, connected, disconnect, connecting} = useWallet();
+    const redirectUrl = searchParams.get('redirect_url');
+    const router = useRouter();
 
-    const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
+    const [mounted, setMounted] = useState(false);
 
     useEffect(() => {
-        if (account.status === 'connected') {
-            const accountData = {
-                status: account.status,
-                addresses: account.addresses,
-                chainId: account.chainId,
-            };
+        setMounted(true);
+    }, []);
 
-            sendWagmiAccountToBackend(accountData)
-                .then(() => window.location.href = `${backendUrl}`);
-        }
-
-        if (connected && publicKey) {
+    useEffect(() => {
+        if (mounted && connected && publicKey) {
             sendAccountToBackend(publicKey.toBase58()).then(() => {
-                window.location.href = `${backendUrl}`;
+                if (redirectUrl) router.push(redirectUrl);
             });
         }
-    }, [account.status, connected, publicKey]);
+    }, [mounted, connected, publicKey]);
 
-    const onSignIn = (connector) => {
-        try {
-            connect({connector});
+    const handleLogout = async () => {
+        await disconnect(); // Отключение кошелька
+        document.cookie = "token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC;";
+        await fetch(`${backendUrl}/logout`, {
+            method: 'GET',
+            headers: {'Content-Type': 'application/json'},
+            credentials: 'include',
+        });
+        router.push('/');
+    };
 
-            console.log(account);
-        } catch (err) {
-            console.info(err);
-        }
-    }
+    if (!mounted) return null;
 
     return (
         <div style={{
@@ -99,8 +75,7 @@ const IndexPage = () => {
             gap: '1rem',
             alignItems: 'stretch'
         }}>
-            {account.status !== 'connected' && !connected
-                &&
+            {!connected ? (
                 <div style={{
                     display: "flex",
                     flexDirection: "column",
@@ -111,12 +86,23 @@ const IndexPage = () => {
                     <div className="child_button">
                         <WalletMultiButton>Login by Solana Wallet</WalletMultiButton>
                     </div>
-                    <Connectors connectors={connectors} handleClick={onSignIn}/>
-                    {(isPending || connecting) && <Loader/>}
+                    {connecting && <Loader/>}
                 </div>
+            ) : (
+                <>
+                    <button className="button"
+                            onClick={() => router.push("/balance")}>
+                        Balance
+                    </button>
+                    <button onClick={handleLogout} className="button">
+                        Logout
+                    </button>
+                </>
+            )
             }
         </div>
-    );
+    )
+        ;
 };
 
 export default IndexPage;

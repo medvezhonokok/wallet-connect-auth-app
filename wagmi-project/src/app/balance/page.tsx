@@ -1,9 +1,10 @@
 'use client';
 
-import { useWallet, useConnection } from '@solana/wallet-adapter-react';
-import { useEffect, useState } from 'react';
-import { PublicKey, Transaction } from '@solana/web3.js';
-import { getAssociatedTokenAddress, createTransferInstruction } from '@solana/spl-token';
+import {useWallet, useConnection} from '@solana/wallet-adapter-react';
+import {useEffect, useState} from 'react';
+import {PublicKey, Transaction} from '@solana/web3.js';
+import {getAssociatedTokenAddress, createTransferInstruction} from '@solana/spl-token';
+import {useRouter} from 'next/navigation';
 
 const backendApiUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
 const oneGameCount = parseFloat(process.env.NEXT_PUBLIC_ONE_GAME_COUNT || '1');
@@ -17,17 +18,32 @@ const getTokenFromCookies = () => {
 };
 
 const BalancePage = () => {
-    const { publicKey, connected, signTransaction } = useWallet();
-    const { connection } = useConnection();
+    const {publicKey, connected, signTransaction} = useWallet();
+    const {connection} = useConnection();
     const [balance, setBalance] = useState<number | null>(null);
     const [tokensCount, setTokensCount] = useState<number>(1);
+    const [attempsPrice, setattempsPrice] = useState<number>(0);
+    const router = useRouter();
 
     useEffect(() => {
-        if (connected && publicKey) {
-            fetch(`${backendApiUrl}/user?token=${getTokenFromCookies()}`, { credentials: 'include' })
+        fetch(`https://api.dexscreener.io/latest/dex/tokens/${TOKEN_MINT}`)
+            .then(res => res.json())
+            .then(data => parseFloat(data.pairs?.[0]?.priceUsd || '0'))
+            .then((price) => {
+                const attempsPriceInCoins = (oneGameCount / price).toFixed(2);
+                setattempsPrice(attempsPriceInCoins)
+            });
+    }, []);
+
+    useEffect(() => {
+        const token = getTokenFromCookies();
+        if (connected && publicKey && token) {
+            fetch(`${backendApiUrl}/user?token=${token}`, {credentials: 'include'})
                 .then(res => res.json())
-                .then(data => setBalance(data.coins || 0))
+                .then(data => setBalance(data.attemps || 0))
                 .catch(err => console.error('Error fetching balance:', err));
+        } else {
+            router.replace('/?redirect_url=/balance');
         }
     }, [connected, publicKey]);
 
@@ -35,13 +51,9 @@ const BalancePage = () => {
         if (!publicKey || !signTransaction) return alert("Please connect your wallet.");
 
         try {
-            const tokenPriceInUSD = await fetch(`https://api.dexscreener.io/latest/dex/tokens/${TOKEN_MINT}`)
-                .then(res => res.json())
-                .then(data => parseFloat(data.pairs?.[0]?.priceUsd || '0'));
+            if (!attempsPrice) throw new Error("Failed to get token price");
 
-            if (!tokenPriceInUSD) throw new Error("Failed to get token price");
-
-            const amountToTransfer = (tokensCount * oneGameCount) / tokenPriceInUSD;
+            const amountToTransfer = tokensCount * attempsPrice;
             const holdAmount = Math.round((amountToTransfer * 60) / 100);
             const ownerAmount = Math.round((amountToTransfer * 40) / 100);
 
@@ -61,7 +73,7 @@ const BalancePage = () => {
 
             const response = await fetch(`${backendApiUrl}/api/transaction`, {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify({
                     signedTransaction: signedTransaction.serialize().toString('base64'),
                     userAddress: publicKey.toBase58(),
@@ -76,24 +88,40 @@ const BalancePage = () => {
                 alert(`Transaction failed: ${result.message}`);
             }
         } catch (error) {
-            console.error("Transaction error:", error);
+            console.error("Transaction error:", error.message, error.stack);
             alert("Transaction failed.");
         }
     };
 
     return (
-        <div style={{ textAlign: 'center', padding: '2rem', display: 'flex', flexDirection: 'column', gap: '10px', alignItems: "center", color: 'white' }}>
-            <h2>Balance: {balance !== null ? `${balance} coins` : '...'}</h2>
+        <div style={{
+            textAlign: 'center',
+            padding: '2rem',
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '10px',
+            alignItems: "center",
+            color: 'white'
+        }}>
+            <h2>Balance: {balance !== null ? balance : '?'} attemps</h2>
             <span>
                 Buy <input
                 type="number"
                 value={tokensCount}
                 onChange={(event) => setTokensCount(Number(event.target.value))}
-                style={{ width: '40px' }}
-            /> coin ({(tokensCount * oneGameCount).toFixed(1)}$)
+                style={{width: '30px'}}
+            /> attemps (~{(tokensCount * attempsPrice).toFixed(1)} $Horn)
             </span>
             <button className="button" onClick={handleWithdraw} disabled={!connected}>
                 Buy
+            </button>
+            <button className="button" onClick={() => {
+                window.location.href = "https://raydium.io/swap/?inputMint=sol&outputMint=6biQcSwYXPcb1DU9fNKUoem2FHHAXeFBmnnRrrdJpump";
+            }}>
+                Buy on Raydium
+            </button>
+            <button className="button" onClick={() => router.back()}>
+                Cancel
             </button>
         </div>
     );
