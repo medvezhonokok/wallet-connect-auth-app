@@ -136,6 +136,11 @@ export const BalancePage = ({handleLogout}) => {
             <button onClick={handleLogout} className="button">
                 Logout
             </button>
+            <button onClick={() => {
+                window.location.href = backendApiUrl;
+            }} className="button">
+                Play
+            </button>
             <button className="button" onClick={() => router.back()}>
                 Cancel
             </button>
