@@ -5,6 +5,7 @@ import {useRouter} from 'next/navigation';
 const backendApiUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
 
 export const getTokenFromCookies = () => {
+    if (typeof document === 'undefined') return null;
     const match = document.cookie.match(new RegExp('(^| )token=([^;]+)'));
     return match ? match[2] : null;
 };
