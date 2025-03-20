@@ -109,7 +109,7 @@ export const BalancePage = ({handleLogout}) => {
             <h2>Balance: {user.attemps} attempts</h2>
             <span>
                  You will get <span
-                className={color}>{user.get_attemps}</span> attempts after {`${String(hours).padStart(2, "0")}:${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`}
+                className={color}>{user.get_attemps}</span> attempt{user.get_attemps > 1 ? 's' : ''} after {`${String(hours).padStart(2, "0")}:${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`}
             </span>
             <span>
                  You hold <span className={color}>{user.balance}</span> $HORN
