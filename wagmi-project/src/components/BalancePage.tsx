@@ -162,16 +162,16 @@ export const BalancePage = ({handleLogout}) => {
             <button className="button" onClick={() => router.back()}>
                 Cancel
             </button>
-            <div style={{marginTop: 30}}>
-                <h2>Free attempts:</h2>
 
-                <button onClick={repostX} className="button" disabled={user?.reposted}>
-                    Repost from X
-                </button>
-                <button onClick={subscribe} className="button" disabled={user?.subscribed}>
-                    Logout
-                </button>
-            </div>
+
+            <h2 style={{marginTop: 30}}>Free attempts:</h2>
+
+            <button onClick={repostX} className="button" disabled={user?.reposted}>
+                Repost from X
+            </button>
+            <button onClick={subscribe} className="button" disabled={user?.subscribed}>
+                Logout
+            </button>
         </div>
     );
 };
