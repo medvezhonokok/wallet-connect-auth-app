@@ -19,11 +19,11 @@ export const BalancePage = ({handleLogout}) => {
     const [color, setColor] = useState<string>('gray');
     const [secondsLeft, setSecondsLeft] = useState(null);
     const router = useRouter();
-    const token = getTokenFromCookies();
 
 
     useEffect(() => {
         if (user) return;
+        const token = getTokenFromCookies();
         fetch(`${backendApiUrl}/user?token=${token}`, {credentials: 'include'})
             .then(res => res.json())
             .then(data => {
