@@ -32,7 +32,7 @@ export const BalancePage = ({handleLogout}) => {
                 setUser(data);
                 setSecondsLeft(timeToSeconds(data.time_update));
             })
-    }, []); // Добавляем зависимости
+    }, []);
 
     useEffect(() => {
         const fetchLimits = async () => {
@@ -82,13 +82,20 @@ export const BalancePage = ({handleLogout}) => {
     }, [user]);
 
     useEffect(() => {
+        if (secondsLeft === null) return;
+
         const interval = setInterval(() => {
-            if (secondsLeft === 0) window.location.reload();
-            setSecondsLeft((prev: number) => Math.max(prev - 1, 0));
+            setSecondsLeft((prev: number) => {
+                if (prev === 0) {
+                    window.location.reload();
+                    return 0;
+                }
+                return prev - 1;
+            });
         }, 1000);
 
         return () => clearInterval(interval);
-    }, [secondsLeft]);
+    }, []);
 
     const repostX = async () => {
         const urlRes = await fetch(`${backendApiUrl}/get-config?key=x-post-link`);
