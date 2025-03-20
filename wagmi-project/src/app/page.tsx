@@ -4,6 +4,7 @@ import {useEffect, useState} from 'react';
 import {WalletMultiButton} from '@solana/wallet-adapter-react-ui';
 import {Loader} from '@/components/Loader';
 import {Connectors} from '@/components/Connector';
+import {BalancePage} from '@/components/BalancePage';
 import {useSearchParams, useRouter} from 'next/navigation';
 
 const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
@@ -89,15 +90,7 @@ const IndexPage = () => {
                     {connecting && <Loader/>}
                 </div>
             ) : (
-                <>
-                    <button className="button"
-                            onClick={() => router.push("/balance")}>
-                        Balance
-                    </button>
-                    <button onClick={handleLogout} className="button">
-                        Logout
-                    </button>
-                </>
+                <BalancePage handleLogout={handleLogout} />
             )
             }
         </div>
