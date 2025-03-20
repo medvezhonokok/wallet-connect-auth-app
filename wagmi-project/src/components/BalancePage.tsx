@@ -18,6 +18,8 @@ export const BalancePage = ({handleLogout}) => {
     const [user, setUser] = useState(null);
     const [color, setColor] = useState<string>('gray');
     const [secondsLeft, setSecondsLeft] = useState(null);
+    const [limits, setLimits] = useState({gold: 0, silver: 0, bronze: 0});
+    const [update, setUpdate] = useState(null);
     const router = useRouter();
 
 
@@ -33,28 +35,50 @@ export const BalancePage = ({handleLogout}) => {
     }, []); // Добавляем зависимости
 
     useEffect(() => {
-        if (!user) return;
-        const attemps = user?.get_attemps;
-        switch (attemps) {
-            case 10:
-                setColor('gold');
-                break;
+        const fetchLimits = async () => {
+            try {
+                const goldRes = await fetch(`${backendApiUrl}/get-config?key=gold_attempts`);
+                const silverRes = await fetch(`${backendApiUrl}/get-config?key=silver_attempts`);
+                const bronzeRes = await fetch(`${backendApiUrl}/get-config?key=bronze_attempts`);
 
-            case 5:
-                setColor('silver');
-                break;
+                const gold = (await goldRes.json())?.value || 0;
+                const silver = (await silverRes.json())?.value || 0;
+                const bronze = (await bronzeRes.json())?.value || 0;
 
-            case 3:
-                setColor('bronze');
-                break;
+                setLimits({gold, silver, bronze});
 
-            case 1:
-                setColor('gray');
-                break;
+                const balance = user.balance;
 
-            default:
-                setColor('gray');
-        }
+                if (balance >= gold) {
+                    setColor("gold");
+                } else if (balance >= silver) {
+                    setColor("silver");
+                    setUpdate({
+                        color: 'gold',
+                        tokens: balance - gold,
+                        attempts: 10
+                    })
+                } else if (balance >= bronze) {
+                    setColor("bronze");
+                    setUpdate({
+                        color: 'silver',
+                        tokens: balance - silver,
+                        attempts: 5
+                    })
+                } else {
+                    setColor("gray");
+                    setUpdate({
+                        color: 'bronze',
+                        tokens: balance - bronze,
+                        attempts: 3
+                    })
+                }
+            } catch (error) {
+                console.error("Ошибка при получении лимитов:", error);
+            }
+        };
+
+        if (user) fetchLimits();
     }, [user]);
 
     useEffect(() => {
@@ -90,6 +114,23 @@ export const BalancePage = ({handleLogout}) => {
             <span>
                  You hold <span className={color}>{user.balance}</span> $HORN
             </span>
+            {update && (
+                <span>
+                    If you hold
+                    <span className={update.color}>{update.tokens}</span>
+                    more $HORN, then you will get
+                    <span className={update.color}>{update.attempts}</span>
+                    attempts
+                </span>
+            )}
+
+            <br/><br/>
+            <div>
+                Hold <span className="akcent">{limits.bronze} $HORN</span> → 3 attempts every 12h<br/>
+                Hold <span className="akcent">{limits.silver} $HORN</span> → 5 attempts every 12h<br/>
+                Hold <span className="akcent">{limits.gold} $HORN</span> → 10 attempts every 12h<br/>
+            </div>
+
             <button className="button" onClick={() => {
                 window.location.href = "https://raydium.io/swap/?inputMint=sol&outputMint=6biQcSwYXPcb1DU9fNKUoem2FHHAXeFBmnnRrrdJpump";
             }}>
