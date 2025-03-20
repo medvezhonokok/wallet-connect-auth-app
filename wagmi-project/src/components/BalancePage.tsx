@@ -103,6 +103,7 @@ export const BalancePage = ({handleLogout}) => {
         window.open(url, '_blank').focus();
         fetch(`${backendApiUrl}/repost`, {
             method: "POST",
+            credentials: 'include',
         });
     }
 
@@ -112,6 +113,7 @@ export const BalancePage = ({handleLogout}) => {
         window.open(url, '_blank').focus();
         fetch(`${backendApiUrl}/subscribe`, {
             method: "POST",
+            credentials: 'include',
         });
     }
 
