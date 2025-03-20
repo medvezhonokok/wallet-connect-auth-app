@@ -6,7 +6,7 @@ html, body {
 }
 
 html {
-    background-image: url("/../game/images/game/environment/end/Bg.png");
+    background-image: url("https://horniverse.ai/game/images/game/environment/end/Bg.png");
     background-size: contain;
     background-repeat: repeat-x;
 }
@@ -62,4 +62,37 @@ html {
 
 .wallet-adapter-dropdown {
     width: 100%;
+}
+
+/* Стиль для поля ввода */
+input[type="number"] {
+    background-color: transparent;  /* Прозрачный фон */
+    color: white;  /* Белый цвет текста */
+    border: 1px solid rgba(255, 255, 255, 0.3);  /* Белая граница с прозрачностью */
+    padding: 10px;
+    font-size: 16px;
+    border-radius: 5px;
+    outline: none;
+    width: 100%;
+}
+
+/* Стиль для стрелочек */
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+    display: none;
+}
+
+.gold {
+    color: #FFD700;
+    font-weight: bold;
+}
+
+.silver {
+    color: #C0C0C0;
+    font-weight: bold;
+}
+
+.bronze {
+    color: #cd7f32;
+    font-weight: bold;
 }

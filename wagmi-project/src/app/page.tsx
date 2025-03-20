@@ -3,8 +3,7 @@ import {useWallet} from '@solana/wallet-adapter-react';
 import {useEffect, useState} from 'react';
 import {WalletMultiButton} from '@solana/wallet-adapter-react-ui';
 import {Loader} from '@/components/Loader';
-import {Connectors} from '@/components/Connector';
-import {BalancePage} from '@/components/BalancePage';
+import {BalancePage, getTokenFromCookies} from '@/components/BalancePage';
 import {useSearchParams, useRouter} from 'next/navigation';
 
 const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
@@ -42,15 +41,17 @@ const IndexPage = () => {
     const router = useRouter();
 
     const [mounted, setMounted] = useState(false);
+    const [sending, setSending] = useState(Boolean(getTokenFromCookies()));
 
     useEffect(() => {
         setMounted(true);
     }, []);
 
     useEffect(() => {
-        if (mounted && connected && publicKey) {
+        if (mounted && connected && publicKey && !sending) {
             sendAccountToBackend(publicKey.toBase58()).then(() => {
                 if (redirectUrl) router.push(redirectUrl);
+                setSending(false);
             });
         }
     }, [mounted, connected, publicKey]);
@@ -90,12 +91,10 @@ const IndexPage = () => {
                     {connecting && <Loader/>}
                 </div>
             ) : (
-                <BalancePage handleLogout={handleLogout} />
-            )
-            }
+                <BalancePage handleLogout={handleLogout}/>
+            )}
         </div>
-    )
-        ;
+    );
 };
 
 export default IndexPage;

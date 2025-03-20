@@ -1,87 +1,75 @@
 'use client';
 
-import {useWallet, useConnection} from '@solana/wallet-adapter-react';
 import {useEffect, useState} from 'react';
-import {PublicKey, Transaction} from '@solana/web3.js';
-import {getAssociatedTokenAddress, createTransferInstruction} from '@solana/spl-token';
 import {useRouter} from 'next/navigation';
 
 const backendApiUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
-const oneGameCount = parseFloat(process.env.NEXT_PUBLIC_ONE_GAME_COUNT || '1');
-const TOKEN_MINT = new PublicKey(process.env.NEXT_PUBLIC_TOKEN_MINT!);
-const OWNER_WALLET = new PublicKey(process.env.NEXT_PUBLIC_OWNER_WALLET!);
-const DEV_WALLET = new PublicKey(process.env.NEXT_PUBLIC_DEV_WALLET!);
 
-const getTokenFromCookies = () => {
+export const getTokenFromCookies = () => {
     const match = document.cookie.match(new RegExp('(^| )token=([^;]+)'));
     return match ? match[2] : null;
 };
 
+const timeToSeconds = (timeStr: string) => {
+    const [hours, minutes, seconds] = timeStr.split(":").map(Number);
+    return hours * 3600 + minutes * 60 + seconds;
+};
+
 export const BalancePage = ({handleLogout}) => {
-    const {publicKey, connected, signTransaction} = useWallet();
-    const {connection} = useConnection();
-    const [balance, setBalance] = useState<number | null>(null);
-    const [tokensCount, setTokensCount] = useState<number>(1);
-    const [attempsPrice, setattempsPrice] = useState<number>(0);
+    const [user, setUser] = useState(null);
+    const [color, setColor] = useState<string>('gray');
+    const [secondsLeft, setSecondsLeft] = useState(null);
     const router = useRouter();
+    const token = getTokenFromCookies();
 
     useEffect(() => {
-        const token = getTokenFromCookies();
-        if (connected && publicKey && token) {
-            fetch(`${backendApiUrl}/user?token=${token}`, {credentials: 'include'})
-                .then(res => res.json())
-                .then(data => setBalance(data.attemps || 0))
-                .catch(err => console.error('Error fetching balance:', err));
-        } else {
-            router.replace('/?redirect_url=/balance');
+        fetch(`${backendApiUrl}/user?token=${token}`, {credentials: 'include'})
+            .then(res => res.json())
+            .then(data => {
+                setUser(data);
+                setSecondsLeft(timeToSeconds(data.time_update));
+            })
+    }, []);
+
+    useEffect(() => {
+        if (!user) return;
+        const attemps = user?.get_attemps;
+        switch (attemps) {
+            case 10:
+                setColor('gold');
+                break;
+
+            case 5:
+                setColor('silver');
+                break;
+
+            case 3:
+                setColor('bronze');
+                break;
+
+            case 1:
+                setColor('gray');
+                break;
+
+            default:
+                setColor('gray');
         }
-    }, [connected, publicKey]);
+    }, [user]);
 
-    const handleWithdraw = async () => {
-        if (!publicKey || !signTransaction) return alert("Please connect your wallet.");
+    useEffect(() => {
+        const interval = setInterval(() => {
+            if (secondsLeft === 0) window.location.reload();
+            setSecondsLeft((prev: number) => Math.max(prev - 1, 0));
+        }, 1000);
 
-        try {
-            if (!attempsPrice) throw new Error("Failed to get token price");
+        return () => clearInterval(interval);
+    }, [secondsLeft, router]);
 
-            const amountToTransfer = tokensCount * attempsPrice;
-            const holdAmount = Math.round((amountToTransfer * 60) / 100);
-            const ownerAmount = Math.round((amountToTransfer * 40) / 100);
+    if (!user) return null;
 
-            const userTokenAccount = await getAssociatedTokenAddress(TOKEN_MINT, publicKey);
-            const devTokenAccount = await getAssociatedTokenAddress(TOKEN_MINT, DEV_WALLET);
-            const ownerTokenAccount = await getAssociatedTokenAddress(TOKEN_MINT, OWNER_WALLET);
-
-            const transaction = new Transaction().add(
-                createTransferInstruction(userTokenAccount, devTokenAccount, publicKey, ownerAmount),
-                createTransferInstruction(userTokenAccount, ownerTokenAccount, publicKey, holdAmount)
-            );
-
-            transaction.recentBlockhash = (await connection.getLatestBlockhash()).blockhash;
-            transaction.feePayer = publicKey;
-
-            const signedTransaction = await signTransaction(transaction);
-
-            const response = await fetch(`${backendApiUrl}/api/transaction`, {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({
-                    signedTransaction: signedTransaction.serialize().toString('base64'),
-                    userAddress: publicKey.toBase58(),
-                    tokens: tokensCount * oneGameCount
-                }),
-            });
-
-            const result = await response.json();
-            if (result.success) {
-                alert(`Transaction successful! Signature: ${result.signature}`);
-            } else {
-                alert(`Transaction failed: ${result.message}`);
-            }
-        } catch (error) {
-            console.error("Transaction error:", error.message, error.stack);
-            alert("Transaction failed.");
-        }
-    };
+    const hours = Math.floor(secondsLeft / 3600);
+    const minutes = Math.floor((secondsLeft % 3600) / 60);
+    const seconds = secondsLeft % 60;
 
     return (
         <div style={{
@@ -93,18 +81,14 @@ export const BalancePage = ({handleLogout}) => {
             alignItems: "center",
             color: 'white'
         }}>
-            <h2>Balance: {balance !== null ? balance : '?'} attemps</h2>
+            <h2>Balance: {user.attemps} attempts</h2>
             <span>
-                Buy <input
-                type="number"
-                value={tokensCount}
-                onChange={(event) => setTokensCount(Number(event.target.value))}
-                style={{width: '30px'}}
-            /> attemps (~{(tokensCount * attempsPrice).toFixed(1)} $Horn)
+                 You will get <span
+                className={color}>{user.get_attemps}</span> attempts after {`${String(hours).padStart(2, "0")}:${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`}
             </span>
-            <button className="button" onClick={handleWithdraw} disabled={!connected}>
-                Buy
-            </button>
+            <span>
+                 You hold <span className={color}>{user.balance}</span> $HORN
+            </span>
             <button className="button" onClick={() => {
                 window.location.href = "https://raydium.io/swap/?inputMint=sol&outputMint=6biQcSwYXPcb1DU9fNKUoem2FHHAXeFBmnnRrrdJpump";
             }}>
