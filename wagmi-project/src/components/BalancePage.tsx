@@ -104,6 +104,7 @@ export const BalancePage = ({handleLogout}) => {
         fetch(`${backendApiUrl}/repost`, {
             method: "POST",
             credentials: 'include',
+            body: JSON.stringify({token: getTokenFromCookies()})
         });
     }
 
@@ -114,6 +115,7 @@ export const BalancePage = ({handleLogout}) => {
         fetch(`${backendApiUrl}/subscribe`, {
             method: "POST",
             credentials: 'include',
+            body: JSON.stringify({token: getTokenFromCookies()})
         });
     }
 
