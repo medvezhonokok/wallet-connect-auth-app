@@ -1,5 +1,4 @@
-'use client';
-
+'use client'
 import {useEffect, useState} from 'react';
 import {useRouter} from 'next/navigation';
 
@@ -22,14 +21,18 @@ export const BalancePage = ({handleLogout}) => {
     const router = useRouter();
     const token = getTokenFromCookies();
 
+
     useEffect(() => {
+        if (user) return;
+        console.log("%c 4 --> Line: 30||BalancePage.tsx\n 'start: ", "color:#f00;", 'start');
         fetch(`${backendApiUrl}/user?token=${token}`, {credentials: 'include'})
             .then(res => res.json())
             .then(data => {
+                console.log("%c 3 --> Line: 33||BalancePage.tsx\n data: ", "color:#ff0;", data);
                 setUser(data);
                 setSecondsLeft(timeToSeconds(data.time_update));
             })
-    }, []);
+    }, []); // Добавляем зависимости
 
     useEffect(() => {
         if (!user) return;
@@ -58,12 +61,12 @@ export const BalancePage = ({handleLogout}) => {
 
     useEffect(() => {
         const interval = setInterval(() => {
-            if (secondsLeft === 0) window.location.reload();
+            // if (secondsLeft === 0) window.location.reload();
             setSecondsLeft((prev: number) => Math.max(prev - 1, 0));
         }, 1000);
 
         return () => clearInterval(interval);
-    }, [secondsLeft, router]);
+    }, [secondsLeft]);
 
     if (!user) return null;
 
