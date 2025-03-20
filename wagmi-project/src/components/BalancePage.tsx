@@ -90,6 +90,24 @@ export const BalancePage = ({handleLogout}) => {
         return () => clearInterval(interval);
     }, [secondsLeft]);
 
+    const repostX = async () => {
+        const urlRes = await fetch(`${backendApiUrl}/get-config?key=x-post-link`);
+        const url = (await urlRes.json())?.value || 0;
+        window.open(url, '_blank').focus();
+        fetch(`${backendApiUrl}/repost`, {
+            method: "POST",
+        });
+    }
+
+    const subscribe = async () => {
+        const urlRes = await fetch(`${backendApiUrl}/get-config?key=telegram-link`);
+        const url = (await urlRes.json())?.value || 0;
+        window.open(url, '_blank').focus();
+        fetch(`${backendApiUrl}/subscribe`, {
+            method: "POST",
+        });
+    }
+
     if (!user) return null;
 
     const hours = Math.floor(secondsLeft / 3600);
@@ -133,17 +151,27 @@ export const BalancePage = ({handleLogout}) => {
             }}>
                 Buy on Raydium
             </button>
-            <button onClick={handleLogout} className="button">
-                Logout
-            </button>
             <button onClick={() => {
                 window.location.href = backendApiUrl;
             }} className="button">
                 Play
             </button>
+            <button onClick={handleLogout} className="button">
+                Logout
+            </button>
             <button className="button" onClick={() => router.back()}>
                 Cancel
             </button>
+            <div style={{marginTop: 30}}>
+                <h2>Free attempts:</h2>
+
+                <button onClick={repostX} className="button" disabled={user?.reposted}>
+                    Repost from X
+                </button>
+                <button onClick={subscribe} className="button" disabled={user?.subscribed}>
+                    Logout
+                </button>
+            </div>
         </div>
     );
 };
