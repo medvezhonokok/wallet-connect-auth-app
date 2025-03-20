@@ -116,9 +116,8 @@ export const BalancePage = ({handleLogout}) => {
             </span>
             {update && (
                 <span>
-                    If you hold
-                    <span className={update.color}>{update.tokens}</span> more $HORN, then you will get
-                    <span className={update.color}>{update.attempts}</span> attempts
+                    If you hold <span className={update.color}>{update.tokens}</span> more $HORN,
+                    then you will get <span className={update.color}>{update.attempts}</span> attempts
                 </span>
             )}
 
