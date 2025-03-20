@@ -50,7 +50,7 @@ const IndexPage = () => {
     useEffect(() => {
         if (mounted && connected && publicKey && !sending) {
             sendAccountToBackend(publicKey.toBase58()).then(() => {
-                if (redirectUrl) router.push(redirectUrl);
+                if (redirectUrl) window.location.href = redirectUrl;
                 setSending(false);
             });
         }
