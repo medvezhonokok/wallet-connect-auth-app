@@ -24,11 +24,9 @@ export const BalancePage = ({handleLogout}) => {
 
     useEffect(() => {
         if (user) return;
-        console.log("%c 4 --> Line: 30||BalancePage.tsx\n 'start: ", "color:#f00;", 'start');
         fetch(`${backendApiUrl}/user?token=${token}`, {credentials: 'include'})
             .then(res => res.json())
             .then(data => {
-                console.log("%c 3 --> Line: 33||BalancePage.tsx\n data: ", "color:#ff0;", data);
                 setUser(data);
                 setSecondsLeft(timeToSeconds(data.time_update));
             })
@@ -61,7 +59,7 @@ export const BalancePage = ({handleLogout}) => {
 
     useEffect(() => {
         const interval = setInterval(() => {
-            // if (secondsLeft === 0) window.location.reload();
+            if (secondsLeft === 0) window.location.reload();
             setSecondsLeft((prev: number) => Math.max(prev - 1, 0));
         }, 1000);
 
