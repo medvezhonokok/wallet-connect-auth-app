@@ -55,21 +55,21 @@ export const BalancePage = ({handleLogout}) => {
                     setColor("silver");
                     setUpdate({
                         color: 'gold',
-                        tokens: balance - gold,
+                        tokens: gold - balance,
                         attempts: 10
                     })
                 } else if (balance >= bronze) {
                     setColor("bronze");
                     setUpdate({
                         color: 'silver',
-                        tokens: balance - silver,
+                        tokens: silver - balance,
                         attempts: 5
                     })
                 } else {
                     setColor("gray");
                     setUpdate({
                         color: 'bronze',
-                        tokens: balance - bronze,
+                        tokens: bronze - balance,
                         attempts: 3
                     })
                 }
@@ -117,10 +117,8 @@ export const BalancePage = ({handleLogout}) => {
             {update && (
                 <span>
                     If you hold
-                    <span className={update.color}>{update.tokens}</span>
-                    more $HORN, then you will get
-                    <span className={update.color}>{update.attempts}</span>
-                    attempts
+                    <span className={update.color}>{update.tokens}</span> more $HORN, then you will get
+                    <span className={update.color}>{update.attempts}</span> attempts
                 </span>
             )}
 
