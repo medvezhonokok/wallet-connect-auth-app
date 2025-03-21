@@ -5,10 +5,11 @@ import {SolanaProvider} from '@/providers/SolanaProvider';
 import {WagmiProvider} from "wagmi";
 import {QueryClient, QueryClientProvider} from '@tanstack/react-query'
 import {getConfig} from "@/wagmi";
+import {WagmiProviderProps} from "wagmi";
 
 interface IClientLayoutProps {
     children: ReactNode;
-    initialState?: State;
+    initialState?: WagmiProviderProps['initialState'];
 }
 
 export const ClientLayout: FC<IClientLayoutProps> = ({
