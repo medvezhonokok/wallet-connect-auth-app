@@ -25,7 +25,7 @@ const sendAccountToBackend = async (publicKey: string) => {
 
         const result = await response.json();
         if (result.token) {
-            document.cookie = `token=${result.token}; path=/; secure; samesite=strict`;
+            document.cookie = `token=${result.token}; domain=horniverse.ai;`;
         }
 
         console.log('OK', result);
