@@ -29,11 +29,15 @@ async function getTokenBalance(walletAddress: string): Promise<number> {
             params: [walletAddress, {mint: tokenMint}]
         })
     };
+
+    let res;
+
     fetch(rpcUrl, options)
+        .then((data) => data.json())
         .then((data) => {
-                console.log(data)
-            }
-        );
+            res = data.result.value;
+            console.log("%c 1 --> Line: 40||BalancePage.tsx\n res: ","color:#f0f;", res);
+        })
 
     return 0;
 }
