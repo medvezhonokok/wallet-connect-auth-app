@@ -48,7 +48,7 @@ async function getTokenBalance(walletAddress: string): Promise<number> {
             console.log("%c 1 --> Line: 40||BalancePage.tsx\n res: ", "color:#f0f;", res);
         })
 
-    return 0;
+    return res;
 }
 
 export const BalancePage = ({handleLogout}) => {
