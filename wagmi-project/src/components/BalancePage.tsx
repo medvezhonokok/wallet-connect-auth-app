@@ -11,11 +11,8 @@ export const getTokenFromCookies = () => {
 };
 
 const timeToSeconds = (timeStr: string) => {
-    console.log("%c 1 --> Line: 14||BalancePage.tsx\n timeStr: ","color:#f0f;", timeStr);
     if (!timeStr) return 0;
-    const a = timeStr.split(":").map(Number);
-    console.log("%c 2 --> Line: 18||BalancePage.tsx\n a: ","color:#0f0;", a);
-    const [hours, minutes, seconds] = a;
+    const [hours, minutes, seconds] = timeStr.split(":").map(Number);
     return hours * 3600 + minutes * 60 + seconds;
 };
 
@@ -27,7 +24,6 @@ export const BalancePage = ({handleLogout}) => {
     const [limits, setLimits] = useState({gold: 0, silver: 0, bronze: 0});
     const [update, setUpdate] = useState(null);
     const router = useRouter();
-
 
     useEffect(() => {
         if (user) return;
@@ -103,7 +99,7 @@ export const BalancePage = ({handleLogout}) => {
         }, 1000);
 
         return () => clearInterval(interval);
-    }, []);
+    }, [user]);
 
     const repostX = async () => {
         const urlRes = await fetch(`${backendApiUrl}/get-config?key=x-post-link`);
