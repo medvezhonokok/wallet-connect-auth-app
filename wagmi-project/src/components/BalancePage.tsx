@@ -6,15 +6,20 @@ const backendApiUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
 const rpcUrl = process.env.NEXT_PUBLIC_SOLANA_RPC;
 const tokenMint = process.env.NEXT_PUBLIC_TOKEN_MINT;
 
+const getCookie = (name) => {
+    const match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
+    return match ? decodeURIComponent(match[2]) : null;
+};
+
+
 export const getTokenFromCookies = () => {
     if (typeof document === 'undefined') return null;
 
     // Ищем в cookies
-    const match = document.cookie.match(new RegExp('(^| )token=([^;]+)'));
-    if (match) return match[2];
+    const match = getCookie('token');
 
     // Ищем в localStorage
-    return localStorage.getItem('token') || null;
+    return match || localStorage.getItem('token') || null;
 };
 
 const timeToSeconds = (timeStr: string) => {
@@ -152,6 +157,10 @@ export const BalancePage = ({handleLogout}) => {
         fetch(`${backendApiUrl}/repost`, {
             method: "POST",
             credentials: 'include',
+            headers: {
+                "Content-Type": "application/json",
+                "X-CSRF-TOKEN": getCookie("XSRF-TOKEN") // Добавляем CSRF-токен
+            },
             body: JSON.stringify({token: getTokenFromCookies()})
         });
     }
@@ -163,6 +172,10 @@ export const BalancePage = ({handleLogout}) => {
         fetch(`${backendApiUrl}/subscribe`, {
             method: "POST",
             credentials: 'include',
+            headers: {
+                "Content-Type": "application/json",
+                "X-CSRF-TOKEN": getCookie("XSRF-TOKEN") // Добавляем CSRF-токен
+            },
             body: JSON.stringify({token: getTokenFromCookies()})
         });
     }
