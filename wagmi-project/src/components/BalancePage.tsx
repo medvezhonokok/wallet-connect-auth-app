@@ -34,19 +34,16 @@ async function getTokenBalance(walletAddress: string): Promise<number> {
         })
     };
 
-    let res;
-
-    fetch(rpcUrl, options)
+    let res = await fetch(rpcUrl, options)
         .then((data) => data.json())
         .then((data) => {
             try {
-                res = data.result.value[0].account.data.parsed.info.tokenAmount.uiAmount;
+                return data.result.value[0].account.data.parsed.info.tokenAmount.uiAmount;
             } catch (err) {
                 console.log("%c 9 --> Line: 42||BalancePage.tsx\n err: ", "color:#acf;", err);
-                res = 0;
+                return 0;
             }
-            console.log("%c 1 --> Line: 40||BalancePage.tsx\n res: ", "color:#f0f;", res);
-        })
+        });
 
     console.log("%c 2 --> Line: 52||BalancePage.tsx\n res: ","color:#0f0;", res);
     return res;
