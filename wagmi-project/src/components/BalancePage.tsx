@@ -3,6 +3,8 @@ import {useRouter} from 'next/navigation';
 import Loader from "@/components/Loader";
 
 const backendApiUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
+const rpcUrl = process.env.NEXT_PUBLIC_SOLANA_RPC;
+const tokenMint = process.env.NEXT_PUBLIC_TOKEN_MINT;
 
 export const getTokenFromCookies = () => {
     if (typeof document === 'undefined') return null;
@@ -16,59 +18,86 @@ const timeToSeconds = (timeStr: string) => {
     return hours * 3600 + minutes * 60 + seconds;
 };
 
+async function getTokenBalance(walletAddress: string): Promise<number> {
+    const options = {
+        method: 'POST',
+        headers: {accept: 'application/json', 'content-type': 'application/json'},
+        body: JSON.stringify({
+            "method": "getTokenAccountBalance",
+            "jsonrpc": "2.0",
+            "params": [
+                tokenMint,
+            ],
+            "id": walletAddress
+        })
+    };
+    fetch(rpcUrl, options)
+        .then((data) => {
+                console.log(data)
+            }
+        );
+
+    return 0;
+}
+
 export const BalancePage = ({handleLogout}) => {
     const [user, setUser] = useState(null);
-    const [pending, setPending] = useState(false);
     const [color, setColor] = useState<string>('gray');
     const [secondsLeft, setSecondsLeft] = useState(null);
     const [limits, setLimits] = useState({gold: 0, silver: 0, bronze: 0});
+    const [tokensCount, setTokensCount] = useState(0);
+    const [attempts, setAttempts] = useState(0);
     const [update, setUpdate] = useState(null);
     const router = useRouter();
+
 
     useEffect(() => {
         if (user) return;
         const token = getTokenFromCookies();
-        setPending(true);
         fetch(`${backendApiUrl}/user?token=${token}`, {credentials: 'include'})
             .then(res => res.json())
             .then(data => {
                 setUser(data);
                 setSecondsLeft(timeToSeconds(data.time_update));
-                setPending(false);
-            })
+            });
     }, []);
 
     useEffect(() => {
         const fetchLimits = async () => {
             try {
-                const goldRes = await fetch(`${backendApiUrl}/get-config?key=gold_attempts`);
-                const silverRes = await fetch(`${backendApiUrl}/get-config?key=silver_attempts`);
-                const bronzeRes = await fetch(`${backendApiUrl}/get-config?key=bronze_attempts`);
+                const [goldRes, silverRes, bronzeRes, balance] = await Promise.all([
+                    fetch(`${backendApiUrl}/get-config?key=gold_attempts`),
+                    fetch(`${backendApiUrl}/get-config?key=silver_attempts`),
+                    fetch(`${backendApiUrl}/get-config?key=bronze_attempts`),
+                    getTokenBalance(user.wallet_address)
+                ]);
 
                 const gold = (await goldRes.json())?.value || 0;
                 const silver = (await silverRes.json())?.value || 0;
                 const bronze = (await bronzeRes.json())?.value || 0;
 
                 setLimits({gold, silver, bronze});
-
-                const balance = user.balance;
+                setTokensCount(balance);
 
                 if (balance >= gold) {
                     setColor("gold");
+                    setAttempts(10);
                 } else if (balance >= silver) {
                     setColor("silver");
                     setUpdate({
                         color: 'gold',
                         tokens: gold - balance,
                         attempts: 10
-                    })
+                    });
+                    setAttempts(5);
                 } else if (balance >= bronze) {
                     setColor("bronze");
                     setUpdate({
                         color: 'silver',
                         tokens: silver - balance,
                         attempts: 5
-                    })
+                    });
+                    setAttempts(3);
                 } else {
                     setColor("gray");
                     setUpdate({
@@ -76,6 +105,7 @@ export const BalancePage = ({handleLogout}) => {
                         tokens: bronze - balance,
                         attempts: 3
                     })
+                    setAttempts(1);
                 }
             } catch (error) {
                 console.error("Ошибка при получении лимитов:", error);
@@ -129,7 +159,7 @@ export const BalancePage = ({handleLogout}) => {
     const minutes = Math.floor((secondsLeft % 3600) / 60);
     const seconds = secondsLeft % 60;
 
-    if (pending) {
+    if (!user) {
         return <div style={{
             display: 'flex',
             flexDirection: 'column',
@@ -154,10 +184,10 @@ export const BalancePage = ({handleLogout}) => {
             <h2>Balance: {user.attemps} attempts</h2>
             <span>
                  You will get <span
-                className={color}>{user.get_attemps}</span> attempt{user.get_attemps > 1 ? 's' : ''} after {`${String(hours).padStart(2, "0")}:${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`}
+                className={color}>{attempts}</span> attempt{attempts > 1 ? 's' : ''} after {`${String(hours).padStart(2, "0")}:${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`}
             </span>
             <span>
-                 You hold <span className={color}>{user.balance}</span> $HORN
+                 You hold <span className={color}>{tokensCount}</span> $HORN
             </span>
             {update && (
                 <span>
