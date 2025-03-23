@@ -23,12 +23,10 @@ async function getTokenBalance(walletAddress: string): Promise<number> {
         method: 'POST',
         headers: {accept: 'application/json', 'content-type': 'application/json'},
         body: JSON.stringify({
-            "method": "getTokenAccountBalance",
-            "jsonrpc": "2.0",
-            "params": [
-                tokenMint,
-            ],
-            "id": walletAddress
+            id: 1,
+            jsonrpc: '2.0',
+            method: 'getTokenAccountsByOwner',
+            params: [walletAddress, {mint: tokenMint}]
         })
     };
     fetch(rpcUrl, options)
