@@ -162,7 +162,7 @@ export const BalancePage = ({handleLogout}) => {
                 "X-CSRF-TOKEN": getCookie("XSRF-TOKEN") // Добавляем CSRF-токен
             },
             body: JSON.stringify({token: getTokenFromCookies()})
-        });
+        }).then(() => window.location.reload());
     }
 
     const subscribe = async () => {
@@ -177,7 +177,7 @@ export const BalancePage = ({handleLogout}) => {
                 "X-CSRF-TOKEN": getCookie("XSRF-TOKEN") // Добавляем CSRF-токен
             },
             body: JSON.stringify({token: getTokenFromCookies()})
-        });
+        }).then(() => window.location.reload());
     }
 
     if (!user) return null;
