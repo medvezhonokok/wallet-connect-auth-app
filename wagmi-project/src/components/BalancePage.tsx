@@ -8,8 +8,13 @@ const tokenMint = process.env.NEXT_PUBLIC_TOKEN_MINT;
 
 export const getTokenFromCookies = () => {
     if (typeof document === 'undefined') return null;
+
+    // Ищем в cookies
     const match = document.cookie.match(new RegExp('(^| )token=([^;]+)'));
-    return match ? match[2] : null;
+    if (match) return match[2];
+
+    // Ищем в localStorage
+    return localStorage.getItem('token') || null;
 };
 
 const timeToSeconds = (timeStr: string) => {

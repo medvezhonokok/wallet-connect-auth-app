@@ -26,6 +26,7 @@ const sendAccountToBackend = async (publicKey: string) => {
         const result = await response.json();
         if (result.token) {
             document.cookie = `token=${result.token}; domain=horniverse.ai;`;
+            localStorage.setItem('token', result.token);
         }
 
         console.log('OK', result);
@@ -59,6 +60,7 @@ const IndexPage = () => {
     const handleLogout = async () => {
         await disconnect(); // Отключение кошелька
         document.cookie = "token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC;";
+        localStorage.removeItem('token');
         await fetch(`${backendUrl}/logout`, {
             method: 'GET',
             headers: {'Content-Type': 'application/json'},
