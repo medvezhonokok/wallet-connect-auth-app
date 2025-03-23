@@ -48,6 +48,7 @@ async function getTokenBalance(walletAddress: string): Promise<number> {
             console.log("%c 1 --> Line: 40||BalancePage.tsx\n res: ", "color:#f0f;", res);
         })
 
+    console.log("%c 2 --> Line: 52||BalancePage.tsx\n res: ","color:#0f0;", res);
     return res;
 }
 
