@@ -1,5 +1,6 @@
 import {useEffect, useState} from 'react';
 import {useRouter} from 'next/navigation';
+import Loader from "@/components/Loader";
 
 const backendApiUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
 
@@ -10,12 +11,13 @@ export const getTokenFromCookies = () => {
 };
 
 const timeToSeconds = (timeStr: string) => {
-    const [hours, minutes, seconds] = timeStr.split(":").map(Number);
+    const [hours, minutes, seconds] = timeStr?.split(":").map(Number);
     return hours * 3600 + minutes * 60 + seconds;
 };
 
 export const BalancePage = ({handleLogout}) => {
     const [user, setUser] = useState(null);
+    const [pending, setPending] = useState(false);
     const [color, setColor] = useState<string>('gray');
     const [secondsLeft, setSecondsLeft] = useState(null);
     const [limits, setLimits] = useState({gold: 0, silver: 0, bronze: 0});
@@ -26,11 +28,13 @@ export const BalancePage = ({handleLogout}) => {
     useEffect(() => {
         if (user) return;
         const token = getTokenFromCookies();
+        setPending(true);
         fetch(`${backendApiUrl}/user?token=${token}`, {credentials: 'include'})
             .then(res => res.json())
             .then(data => {
                 setUser(data);
                 setSecondsLeft(timeToSeconds(data.time_update));
+                setPending(false);
             })
     }, []);
 
@@ -124,6 +128,18 @@ export const BalancePage = ({handleLogout}) => {
     const hours = Math.floor(secondsLeft / 3600);
     const minutes = Math.floor((secondsLeft % 3600) / 60);
     const seconds = secondsLeft % 60;
+
+    if (pending) {
+        return <div style={{
+            display: 'flex',
+            flexDirection: 'column',
+            width: 'fit-content',
+            gap: '1rem',
+            alignItems: 'stretch'
+        }}>
+            <Loader/>
+        </div>
+    }
 
     return (
         <div style={{
