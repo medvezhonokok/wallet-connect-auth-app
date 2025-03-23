@@ -182,15 +182,15 @@ export const BalancePage = ({handleLogout}) => {
             <h2>Balance: {user.attemps} attempts</h2>
             <span>
                  You will get <span
-                className={color}>{attempts}</span> attempt{attempts > 1 ? 's' : ''} after {`${String(hours).padStart(2, "0")}:${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`}
+                className={color}>{attempts || '?'}</span> attempt{attempts > 1 ? 's' : ''} after {`${String(hours).padStart(2, "0")}:${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`}
             </span>
             <span>
-                 You hold <span className={color}>{tokensCount}</span> $HORN
+                 You hold <span className={color}>{tokensCount || '????'}</span> $HORN
             </span>
             {update && (
                 <span>
-                    If you hold <span className={update.color}>{update.tokens}</span> more $HORN,
-                    then you will get <span className={update.color}>{update.attempts}</span> attempts
+                    If you hold <span className={update.color}>{update.tokens || '????'}</span> more $HORN,
+                    then you will get <span className={update.color}>{update.attempts || '?'}</span> attempts
                 </span>
             )}
 
