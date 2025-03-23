@@ -1,5 +1,4 @@
 html, body {
-    height: 100%;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -7,8 +6,8 @@ html, body {
 
 html {
     background-image: url("https://horniverse.ai/game/images/game/environment/end/Bg.png");
-    background-size: contain;
-    background-repeat: repeat-x;
+    background-size: cover;
+    background-position: center;
 }
 
 .loading-container {

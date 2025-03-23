@@ -174,9 +174,9 @@ export const BalancePage = ({handleLogout}) => {
             </div>
 
             <button className="button" onClick={() => {
-                window.location.href = "https://raydium.io/swap/?inputMint=sol&outputMint=6biQcSwYXPcb1DU9fNKUoem2FHHAXeFBmnnRrrdJpump";
+                window.location.href = "https://swap.pump.fun/?input=So11111111111111111111111111111111111111112&output=6biQcSwYXPcb1DU9fNKUoem2FHHAXeFBmnnRrrdJpump";
             }}>
-                Buy on Raydium
+                Buy on PumpSwap
             </button>
             <button onClick={() => {
                 window.location.href = backendApiUrl;
@@ -197,7 +197,7 @@ export const BalancePage = ({handleLogout}) => {
                 Repost from X
             </button>
             <button onClick={subscribe} className="button" disabled={user?.subscribed}>
-                Logout
+                Subscribe to Telegram
             </button>
         </div>
     );
