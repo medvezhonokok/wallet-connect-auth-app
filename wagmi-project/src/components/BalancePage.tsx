@@ -11,7 +11,8 @@ export const getTokenFromCookies = () => {
 };
 
 const timeToSeconds = (timeStr: string) => {
-    const [hours, minutes, seconds] = timeStr?.split(":").map(Number);
+    if (!timeStr) return 0;
+    const [hours, minutes, seconds] = timeStr.split(":").map(Number);
     return hours * 3600 + minutes * 60 + seconds;
 };
 
