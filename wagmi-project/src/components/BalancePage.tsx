@@ -26,7 +26,11 @@ async function getTokenBalance(walletAddress: string): Promise<number> {
             id: 1,
             jsonrpc: '2.0',
             method: 'getTokenAccountsByOwner',
-            params: [walletAddress, {mint: tokenMint}]
+            params: [
+                walletAddress,
+                {mint: tokenMint},
+                {encoding: "jsonParsed"}
+            ]
         })
     };
 
@@ -36,7 +40,7 @@ async function getTokenBalance(walletAddress: string): Promise<number> {
         .then((data) => data.json())
         .then((data) => {
             res = data.result.value;
-            console.log("%c 1 --> Line: 40||BalancePage.tsx\n res: ","color:#f0f;", res);
+            console.log("%c 1 --> Line: 40||BalancePage.tsx\n res: ", "color:#f0f;", res);
         })
 
     return 0;
