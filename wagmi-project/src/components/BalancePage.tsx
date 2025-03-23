@@ -50,7 +50,7 @@ async function getTokenBalance(walletAddress: string): Promise<number> {
             }
         });
 
-    console.log("%c 2 --> Line: 52||BalancePage.tsx\n res: ","color:#0f0;", res);
+    console.log("%c 2 --> Line: 52||BalancePage.tsx\n res: ", "color:#0f0;", res);
     return res;
 }
 
@@ -198,15 +198,16 @@ export const BalancePage = ({handleLogout}) => {
             <h2>Balance: {user.attemps} attempts</h2>
             <span>
                  You will get <span
-                className={color}>{attempts === null || '?'}</span> attempt{attempts > 1 ? 's' : ''} after {`${String(hours).padStart(2, "0")}:${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`}
+                className={color}>{attempts === null ? '?' : attempts}</span> attempt{attempts > 1 ? 's' : ''} after {`${String(hours).padStart(2, "0")}:${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`}
             </span>
             <span>
-                 You hold <span className={color}>{tokensCount === null || '????'}</span> $HORN
+                 You hold <span className={color}>{tokensCount === null ? '????' : tokensCount}</span> $HORN
             </span>
             {update && (
                 <span>
-                    If you hold <span className={update.color}>{update.tokens === null || '????'}</span> more $HORN,
-                    then you will get <span className={update.color}>{update.attempts === null || '?'}</span> attempts
+                    If you hold <span className={update.color}>{update.tokens === null ? '????' : update.tokens}</span> more $HORN,
+                    then you will get <span
+                    className={update.color}>{update.attempts === null ? '?' : update.attempts}</span> attempts
                 </span>
             )}
 
