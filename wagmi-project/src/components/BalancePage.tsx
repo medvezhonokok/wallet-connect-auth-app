@@ -11,8 +11,11 @@ export const getTokenFromCookies = () => {
 };
 
 const timeToSeconds = (timeStr: string) => {
+    console.log("%c 1 --> Line: 14||BalancePage.tsx\n timeStr: ","color:#f0f;", timeStr);
     if (!timeStr) return 0;
-    const [hours, minutes, seconds] = timeStr.split(":").map(Number);
+    const a = timeStr.split(":").map(Number);
+    console.log("%c 2 --> Line: 18||BalancePage.tsx\n a: ","color:#0f0;", a);
+    const [hours, minutes, seconds] = a;
     return hours * 3600 + minutes * 60 + seconds;
 };
 
