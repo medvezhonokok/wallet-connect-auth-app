@@ -57,7 +57,9 @@ const IndexPage = () => {
     }, [mounted, connected, publicKey]);
 
     const handleLogout = async () => {
+        console.log("%c 1 --> Line: 61||page.tsx\n 'logout: ","color:#f0f;", 'logout');
         await disconnect(); // Отключение кошелька
+        console.log("%c 2 --> Line: 60||page.tsx\n 'logout: ","color:#0f0;", 'logout');
         document.cookie = "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC;";
         localStorage.removeItem('token');
         window.location.href = '../';
