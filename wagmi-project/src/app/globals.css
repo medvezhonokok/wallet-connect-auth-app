@@ -60,15 +60,22 @@ html {
     background-color: #0c3b40;
 }
 
+button[disabled] {
+    cursor: not-allowed;
+    background-color: #394d4a;
+    border-color: #0c3b40;
+    color: #777777;
+}
+
 .wallet-adapter-dropdown {
     width: 100%;
 }
 
 /* Стиль для поля ввода */
 input[type="number"] {
-    background-color: transparent;  /* Прозрачный фон */
-    color: white;  /* Белый цвет текста */
-    border: 1px solid rgba(255, 255, 255, 0.3);  /* Белая граница с прозрачностью */
+    background-color: transparent; /* Прозрачный фон */
+    color: white; /* Белый цвет текста */
+    border: 1px solid rgba(255, 255, 255, 0.3); /* Белая граница с прозрачностью */
     padding: 10px;
     font-size: 16px;
     border-radius: 5px;

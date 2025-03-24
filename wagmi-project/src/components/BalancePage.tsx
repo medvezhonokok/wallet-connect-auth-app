@@ -150,35 +150,48 @@ export const BalancePage = ({handleLogout}) => {
         return () => clearInterval(interval);
     }, [user]);
 
-    const repostX = async () => {
+    const repostXCallback = async () => {
         const urlRes = await fetch(`${backendApiUrl}/get-config?key=x-post-link`);
         const url = (await urlRes.json())?.value || 0;
-        window.open(url, '_blank').focus();
-        fetch(`${backendApiUrl}/repost`, {
-            method: "POST",
-            credentials: 'include',
-            headers: {
-                "Content-Type": "application/json",
-                "X-CSRF-TOKEN": getCookie("XSRF-TOKEN") // Добавляем CSRF-токен
-            },
-            body: JSON.stringify({token: getTokenFromCookies()})
-        }).then(() => window.location.reload());
-    }
 
-    const subscribe = async () => {
+        return () => {
+            window.open(url, '_blank').focus();
+            fetch(`${backendApiUrl}/repost`, {
+                method: "POST",
+                credentials: 'include',
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-CSRF-TOKEN": getCookie("XSRF-TOKEN") // Добавляем CSRF-токен
+                },
+                body: JSON.stringify({token: getTokenFromCookies()})
+            }).then(() => window.location.reload());
+        }
+    };
+
+    const subscribeCallback = async () => {
         const urlRes = await fetch(`${backendApiUrl}/get-config?key=telegram-link`);
         const url = (await urlRes.json())?.value || 0;
-        window.open(url, '_blank').focus();
-        fetch(`${backendApiUrl}/subscribe`, {
-            method: "POST",
-            credentials: 'include',
-            headers: {
-                "Content-Type": "application/json",
-                "X-CSRF-TOKEN": getCookie("XSRF-TOKEN") // Добавляем CSRF-токен
-            },
-            body: JSON.stringify({token: getTokenFromCookies()})
-        }).then(() => window.location.reload());
+
+        return () => {
+            window.open(url, '_blank').focus()
+            fetch(`${backendApiUrl}/subscribe`, {
+                method: "POST",
+                credentials: 'include',
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-CSRF-TOKEN": getCookie("XSRF-TOKEN") // Добавляем CSRF-токен
+                },
+                body: JSON.stringify({token: getTokenFromCookies()})
+            }).then(() => window.location.reload());
+        }
     }
+
+    let repostX, subscribe;
+
+    useEffect(() => {
+        repostX = repostXCallback();
+        subscribe = subscribeCallback();
+    }, []);
 
     if (!user) return null;
 
@@ -251,10 +264,10 @@ export const BalancePage = ({handleLogout}) => {
 
             <h2 style={{marginTop: 30}}>Free attempts:</h2>
 
-            <button onClick={repostX} className="button" disabled={user?.reposted}>
+            <button onClick={repostX} className="button" disabled={repostX && user?.reposted}>
                 Repost from X
             </button>
-            <button onClick={subscribe} className="button" disabled={user?.subscribed}>
+            <button onClick={subscribe} className="button" disabled={subscribe && user?.subscribed}>
                 Subscribe to Telegram
             </button>
         </div>
