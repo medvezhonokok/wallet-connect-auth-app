@@ -42,15 +42,17 @@ const IndexPage = () => {
     const router = useRouter();
 
     const [mounted, setMounted] = useState(false);
+    const [sending, setSending] = useState(Boolean(getTokenFromCookies()));
 
     useEffect(() => {
         setMounted(true);
     }, []);
 
     useEffect(() => {
-        if (mounted && connected && publicKey) {
+        if (mounted && connected && publicKey && !sending) {
             sendAccountToBackend(publicKey.toBase58()).then(() => {
                 if (redirectUrl) window.location.href = redirectUrl;
+                setSending(false);
             });
         }
     }, [mounted, connected, publicKey]);

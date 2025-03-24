@@ -1,5 +1,5 @@
 import {useEffect, useState} from 'react';
-import {useRouter} from 'next/navigation';
+import {useRouter, useSearchParams} from 'next/navigation';
 import Loader from "@/components/Loader";
 
 const backendApiUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
@@ -67,7 +67,10 @@ export const BalancePage = ({handleLogout}) => {
     const [update, setUpdate] = useState(null);
     const [callbacks, setCallbacks] = useState(null);
     const router = useRouter();
+    const searchParams = useSearchParams();
+    const redirectUrl = searchParams.get('redirect_url');
 
+    if (redirectUrl) window.location.href = redirectUrl;
 
     useEffect(() => {
         if (user) return;
