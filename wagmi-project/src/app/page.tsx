@@ -4,7 +4,7 @@ import {useEffect, useState} from 'react';
 import {WalletMultiButton} from '@solana/wallet-adapter-react-ui';
 import {Loader} from '@/components/Loader';
 import {BalancePage, getTokenFromCookies} from '@/components/BalancePage';
-import {useSearchParams, useRouter} from 'next/navigation';
+import {useSearchParams} from 'next/navigation';
 
 const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
 
@@ -39,7 +39,6 @@ const IndexPage = () => {
     const searchParams = useSearchParams();
     const {publicKey, connected, disconnect, connecting} = useWallet();
     const redirectUrl = searchParams.get('redirect_url');
-    const router = useRouter();
 
     const [mounted, setMounted] = useState(false);
     const [sending, setSending] = useState(Boolean(getTokenFromCookies()));
@@ -61,7 +60,7 @@ const IndexPage = () => {
         await disconnect(); // Отключение кошелька
         document.cookie = "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC;";
         localStorage.removeItem('token');
-        router.push('../');
+        window.location.href = '../';
     };
 
     if (!mounted) return null;

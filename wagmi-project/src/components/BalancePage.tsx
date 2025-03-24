@@ -1,5 +1,5 @@
 import {useEffect, useState} from 'react';
-import {useRouter, useSearchParams} from 'next/navigation';
+import {useSearchParams} from 'next/navigation';
 import Loader from "@/components/Loader";
 
 const backendApiUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
@@ -66,7 +66,6 @@ export const BalancePage = ({handleLogout}) => {
     const [attempts, setAttempts] = useState(0);
     const [update, setUpdate] = useState(null);
     const [callbacks, setCallbacks] = useState(null);
-    const router = useRouter();
     const searchParams = useSearchParams();
     const redirectUrl = searchParams.get('redirect_url');
 
@@ -267,7 +266,7 @@ export const BalancePage = ({handleLogout}) => {
             <button onClick={handleLogout} className="button">
                 Logout
             </button>
-            <button className="button" onClick={() => document.referrer ? router.push(document.referrer || '/') : router.back()}>
+            <button className="button" onClick={() => window.location.href = document.referrer || '/'}>
                 Cancel
             </button>
 
