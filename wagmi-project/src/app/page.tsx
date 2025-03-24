@@ -8,6 +8,15 @@ import {useSearchParams, useRouter} from 'next/navigation';
 
 const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
 
+const isPhantomApp = /Phantom/i.test(navigator.userAgent);
+
+if (isPhantomApp) {
+    window.open("https://horniverse.ai/app", "_blank"); // Принудительно в браузер
+} else {
+    console.log("Открыто в обычном браузере");
+}
+
+
 const sendAccountToBackend = async (publicKey: string) => {
     const accountData = {
         status: "connected",
