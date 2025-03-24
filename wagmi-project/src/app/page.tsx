@@ -49,10 +49,7 @@ const IndexPage = () => {
         if (typeof window !== "undefined") {
             const isPhantomApp = /Phantom/i.test(navigator.userAgent);
             if (isPhantomApp) {
-                throw new Error(document.cookie);
-                window.open("https://horniverse.ai/app", "_blank"); // Принудительно в браузер
-            } else {
-                console.log("Открыто в обычном браузере");
+                throw new Error(sending.toString() + ' - ' + getTokenFromCookies());
             }
         }
     }, []);
