@@ -8,15 +8,6 @@ import {useSearchParams, useRouter} from 'next/navigation';
 
 const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
 
-const isPhantomApp = /Phantom/i.test(navigator.userAgent);
-
-if (isPhantomApp) {
-    window.open("https://horniverse.ai/app", "_blank"); // Принудительно в браузер
-} else {
-    console.log("Открыто в обычном браузере");
-}
-
-
 const sendAccountToBackend = async (publicKey: string) => {
     const accountData = {
         status: "connected",
@@ -52,6 +43,22 @@ const IndexPage = () => {
 
     const [mounted, setMounted] = useState(false);
     const [sending, setSending] = useState(Boolean(getTokenFromCookies()));
+
+
+    useEffect(() => {
+        if (typeof window !== "undefined") {
+            const userAgent = navigator.userAgent || "";
+            console.log("%c 1 --> Line: 51||page.tsx\n userAgent: ","color:#f0f;", userAgent);
+            const isPhantomApp = /Phantom/i.test(navigator.userAgent);
+
+            if (isPhantomApp) {
+                window.open("https://horniverse.ai/app", "_blank"); // Принудительно в браузер
+            } else {
+                console.log("Открыто в обычном браузере");
+            }
+        }
+    }, []);
+
 
     useEffect(() => {
         setMounted(true);
