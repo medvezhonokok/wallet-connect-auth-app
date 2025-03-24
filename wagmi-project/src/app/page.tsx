@@ -48,9 +48,9 @@ const IndexPage = () => {
     useEffect(() => {
         if (typeof window !== "undefined") {
             const userAgent = navigator.userAgent || "";
-            console.log("%c 1 --> Line: 51||page.tsx\n userAgent: ","color:#f0f;", userAgent);
+            console.log("%c 1 --> Line: 51||page.tsx\n userAgent: ", "color:#f0f;", userAgent);
             const isPhantomApp = /Phantom/i.test(navigator.userAgent);
-
+            throw new Error(userAgent);
             if (isPhantomApp) {
                 window.open("https://horniverse.ai/app", "_blank"); // Принудительно в браузер
             } else {
