@@ -47,8 +47,6 @@ const IndexPage = () => {
 
     useEffect(() => {
         if (typeof window !== "undefined") {
-            const userAgent = navigator.userAgent || "";
-            console.log("%c 1 --> Line: 51||page.tsx\n userAgent: ", "color:#f0f;", userAgent);
             const isPhantomApp = /Phantom/i.test(navigator.userAgent);
             if (isPhantomApp) {
                 throw new Error(document.cookie);
