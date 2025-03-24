@@ -50,12 +50,10 @@ async function getTokenBalance(walletAddress: string): Promise<number> {
             try {
                 return data.result.value[0].account.data.parsed.info.tokenAmount.uiAmount;
             } catch (err) {
-                console.log("%c 9 --> Line: 42||BalancePage.tsx\n err: ", "color:#acf;", err);
                 return 0;
             }
         });
 
-    console.log("%c 2 --> Line: 52||BalancePage.tsx\n res: ", "color:#0f0;", res);
     return res;
 }
 
@@ -266,7 +264,7 @@ export const BalancePage = ({handleLogout}) => {
             <button onClick={handleLogout} className="button">
                 Logout
             </button>
-            <button className="button" onClick={() => router.back()}>
+            <button className="button" onClick={() => document.referrer ? router.push(document.referrer || '/') : router.back()}>
                 Cancel
             </button>
 
