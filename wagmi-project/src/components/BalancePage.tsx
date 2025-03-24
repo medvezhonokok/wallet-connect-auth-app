@@ -1,7 +1,6 @@
 import {useEffect, useState} from 'react';
 import {useSearchParams} from 'next/navigation';
 import Loader from "@/components/Loader";
-import {getCookie} from "@/helpers/cookie";
 
 const backendApiUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
 const rpcUrl = process.env.NEXT_PUBLIC_SOLANA_RPC;
@@ -10,11 +9,8 @@ const tokenMint = process.env.NEXT_PUBLIC_TOKEN_MINT;
 export const getTokenFromCookies = () => {
     if (typeof document === 'undefined') return null;
 
-    // Ищем в cookies
-    const match = getCookie('token');
-
     // Ищем в localStorage
-    return match || localStorage.getItem('token') || null;
+    return localStorage.getItem('token') || null;
 };
 
 const timeToSeconds = (timeStr: string) => {
@@ -157,7 +153,6 @@ export const BalancePage = ({handleLogout}) => {
                 credentials: 'include',
                 headers: {
                     "Content-Type": "application/json",
-                    "X-CSRF-TOKEN": getCookie("XSRF-TOKEN") // Добавляем CSRF-токен
                 },
                 body: JSON.stringify({token: getTokenFromCookies()})
             }).then(() => window.location.reload());
@@ -175,7 +170,6 @@ export const BalancePage = ({handleLogout}) => {
                 credentials: 'include',
                 headers: {
                     "Content-Type": "application/json",
-                    "X-CSRF-TOKEN": getCookie("XSRF-TOKEN") // Добавляем CSRF-токен
                 },
                 body: JSON.stringify({token: getTokenFromCookies()})
             }).then(() => window.location.reload());

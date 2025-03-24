@@ -5,7 +5,6 @@ import {WalletMultiButton} from '@solana/wallet-adapter-react-ui';
 import {Loader} from '@/components/Loader';
 import {BalancePage, getTokenFromCookies} from '@/components/BalancePage';
 import {useSearchParams} from 'next/navigation';
-import {deleteCookie, setCookie} from "@/helpers/cookie";
 
 const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
 
@@ -26,7 +25,6 @@ const sendAccountToBackend = async (publicKey: string) => {
 
         const result = await response.json();
         if (result.token) {
-            setCookie("token", result.token, {domain: 'horniverse.ai'});
             localStorage.setItem('token', result.token);
         }
 
@@ -59,7 +57,6 @@ const IndexPage = () => {
 
     const handleLogout = async () => {
         await disconnect(); // Отключение кошелька
-        deleteCookie("token");
         localStorage.removeItem('token');
     };
 
