@@ -67,6 +67,7 @@ export const BalancePage = ({handleLogout}) => {
     const [tokensCount, setTokensCount] = useState(0);
     const [attempts, setAttempts] = useState(0);
     const [update, setUpdate] = useState(null);
+    const [callbacks, setCallbacks] = useState(null);
     const router = useRouter();
 
 
@@ -186,11 +187,15 @@ export const BalancePage = ({handleLogout}) => {
         }
     }
 
-    let repostX, subscribe;
-
     useEffect(() => {
-        repostX = repostXCallback();
-        subscribe = subscribeCallback();
+        const repostX = repostXCallback();
+        const subscribe = subscribeCallback();
+        setCallbacks(
+            {
+                repostX,
+                subscribe
+            }
+        )
     }, []);
 
     if (!user) return null;
@@ -264,10 +269,10 @@ export const BalancePage = ({handleLogout}) => {
 
             <h2 style={{marginTop: 30}}>Free attempts:</h2>
 
-            <button onClick={repostX} className="button" disabled={repostX && user?.reposted}>
+            <button onClick={callbacks?.repostX} className="button" disabled={!callbacks || user?.reposted}>
                 Repost from X
             </button>
-            <button onClick={subscribe} className="button" disabled={subscribe && user?.subscribed}>
+            <button onClick={callbacks?.subscribe} className="button" disabled={!callbacks || user?.subscribed}>
                 Subscribe to Telegram
             </button>
         </div>
