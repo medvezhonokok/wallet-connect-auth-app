@@ -273,6 +273,10 @@ export const BalancePage = ({handleLogout}) => {
 
             <h2 style={{marginTop: 30}}>Free attempts:</h2>
 
+            <span>
+                 Renews in: {`${String(hours).padStart(2, "0")}:${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`}
+            </span>
+
             <button onClick={callbacks?.repostX} className="button" disabled={!callbacks || user?.reposted}>
                 Repost from X
             </button>
