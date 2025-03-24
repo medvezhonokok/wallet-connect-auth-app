@@ -1,16 +1,11 @@
 import {useEffect, useState} from 'react';
 import {useSearchParams} from 'next/navigation';
 import Loader from "@/components/Loader";
+import {getCookie} from "@/helpers/cookie";
 
 const backendApiUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
 const rpcUrl = process.env.NEXT_PUBLIC_SOLANA_RPC;
 const tokenMint = process.env.NEXT_PUBLIC_TOKEN_MINT;
-
-const getCookie = (name) => {
-    const match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
-    return match ? decodeURIComponent(match[2]) : null;
-};
-
 
 export const getTokenFromCookies = () => {
     if (typeof document === 'undefined') return null;
