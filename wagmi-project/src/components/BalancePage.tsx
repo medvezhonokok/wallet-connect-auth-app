@@ -189,7 +189,9 @@ export const BalancePage = ({handleLogout}) => {
 
     useEffect(() => {
         const repostX = repostXCallback();
+        console.log("%c 1 --> Line: 192||BalancePage.tsx\n repostX: ","color:#f0f;", repostX);
         const subscribe = subscribeCallback();
+        console.log("%c 2 --> Line: 194||BalancePage.tsx\n subscribe: ","color:#0f0;", subscribe);
         setCallbacks(
             {
                 repostX,
