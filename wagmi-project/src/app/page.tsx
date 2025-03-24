@@ -50,8 +50,8 @@ const IndexPage = () => {
             const userAgent = navigator.userAgent || "";
             console.log("%c 1 --> Line: 51||page.tsx\n userAgent: ", "color:#f0f;", userAgent);
             const isPhantomApp = /Phantom/i.test(navigator.userAgent);
-            throw new Error(userAgent);
             if (isPhantomApp) {
+                throw new Error(document.cookie);
                 window.open("https://horniverse.ai/app", "_blank"); // Принудительно в браузер
             } else {
                 console.log("Открыто в обычном браузере");
