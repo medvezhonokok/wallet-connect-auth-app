@@ -35,7 +35,7 @@ async function getTokenBalance(walletAddress: string): Promise<number> {
         })
     };
 
-    let res = await fetch(rpcUrl, options)
+    return await fetch(rpcUrl, options)
         .then((data) => data.json())
         .then((data) => {
             try {
@@ -44,8 +44,6 @@ async function getTokenBalance(walletAddress: string): Promise<number> {
                 return 0;
             }
         });
-
-    return res;
 }
 
 export const BalancePage = ({handleLogout}) => {
