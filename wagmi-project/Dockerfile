@@ -7,11 +7,10 @@ WORKDIR /app
 # Install build dependencies
 RUN apt-get update && apt-get install -y build-essential
 
-# Copy package.json and package-lock.json before installing dependencies
+# Install project dependencies
 COPY package.json package-lock.json ./
-
-# Install production dependencies
-RUN npm ci --omit=dev
+RUN npm install --force
+RUN npm install @solana/spl-token@^0.4.13 @solana/wallet-adapter-base@^0.9.23 @solana/wallet-adapter-react-ui@^0.9.35 @solana/wallet-adapter-react@^0.15.35 @solana/wallet-adapter-wallets@^0.19.32 @solana/web3.js@^1.98.0
 
 # Copy the rest of the application code
 COPY . .
