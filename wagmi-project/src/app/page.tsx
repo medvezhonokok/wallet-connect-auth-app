@@ -59,14 +59,9 @@ const IndexPage = () => {
 
     const handleLogout = async () => {
         await disconnect(); // Отключение кошелька
-        document.cookie = "token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC;";
+        document.cookie = "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC;";
         localStorage.removeItem('token');
-        await fetch(`${backendUrl}/logout`, {
-            method: 'GET',
-            headers: {'Content-Type': 'application/json'},
-            credentials: 'include',
-        });
-        router.push('/');
+        router.push('../');
     };
 
     if (!mounted) return null;
