@@ -51,7 +51,7 @@ const IndexPage = () => {
         if (mounted && connected && publicKey && !sending) {
             sendAccountToBackend(publicKey.toBase58()).then(() => {
                 if (redirectUrl) window.location.href = redirectUrl;
-                setSending(false);
+                setSending(true);
             });
         }
     }, [mounted, connected, publicKey]);
