@@ -44,17 +44,6 @@ const IndexPage = () => {
     const [mounted, setMounted] = useState(false);
     const [sending, setSending] = useState(Boolean(getTokenFromCookies()));
 
-
-    useEffect(() => {
-        if (typeof window !== "undefined") {
-            const isPhantomApp = /Phantom/i.test(navigator.userAgent);
-            if (isPhantomApp) {
-                throw new Error(sending.toString() + ' - ' + getTokenFromCookies());
-            }
-        }
-    }, []);
-
-
     useEffect(() => {
         setMounted(true);
     }, []);
@@ -90,7 +79,7 @@ const IndexPage = () => {
             gap: '1rem',
             alignItems: 'stretch'
         }}>
-            {!connected ? (
+            {!connected && !sending ? (
                 <div style={{
                     display: "flex",
                     flexDirection: "column",
