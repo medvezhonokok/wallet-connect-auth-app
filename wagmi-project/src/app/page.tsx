@@ -4,7 +4,6 @@ import {useEffect, useState} from 'react';
 import {WalletMultiButton} from '@solana/wallet-adapter-react-ui';
 import {Loader} from '@/components/Loader';
 import {BalancePage, getTokenFromCookies} from '@/components/BalancePage';
-import {useSearchParams} from 'next/navigation';
 
 const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
 
@@ -35,9 +34,7 @@ const sendAccountToBackend = async (publicKey: string) => {
 };
 
 const IndexPage = () => {
-    const searchParams = useSearchParams();
     const {publicKey, connected, disconnect, connecting} = useWallet();
-    const redirectUrl = searchParams.get('redirect_url');
 
     const [mounted, setMounted] = useState(false);
     const [sending, setSending] = useState(Boolean(getTokenFromCookies()));
@@ -49,7 +46,6 @@ const IndexPage = () => {
     useEffect(() => {
         if (mounted && connected && publicKey && !sending) {
             sendAccountToBackend(publicKey.toBase58()).then(() => {
-                if (redirectUrl) window.location.href = redirectUrl;
                 setSending(true);
             });
         }

@@ -253,10 +253,6 @@ export const BalancePage = ({handleLogout}) => {
             <button onClick={handleLogout} className="button">
                 Logout
             </button>
-            <button className="button" onClick={() => window.location.href = document.referrer || '/'}>
-                Cancel
-            </button>
-
 
             <h2 style={{marginTop: 30}}>Free attempts:</h2>
 
