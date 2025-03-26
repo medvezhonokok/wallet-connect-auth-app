@@ -65,7 +65,7 @@ export const BalancePage = ({handleLogout}) => {
             .then(async (res) => {
                 if (res.status === 404) {
                     localStorage.removeItem('token');
-                    return;
+                    window.location.reload();
                 }
                 return res.json();
             })
