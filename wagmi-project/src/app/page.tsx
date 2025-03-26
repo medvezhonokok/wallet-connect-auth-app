@@ -4,6 +4,7 @@ import {useEffect, useState} from 'react';
 import {WalletMultiButton} from '@solana/wallet-adapter-react-ui';
 import {Loader} from '@/components/Loader';
 import {BalancePage, getTokenFromCookies} from '@/components/BalancePage';
+import {ErrorModal} from "@/components/ErrorModal";
 
 const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
 
@@ -38,16 +39,14 @@ const IndexPage = () => {
 
     const [mounted, setMounted] = useState(false);
     const [sending, setSending] = useState(Boolean(getTokenFromCookies()));
+    const [error, setError] = useState('');
 
     useEffect(() => {
         if (typeof window !== "undefined") {
             const isPhantomApp = /Phantom/i.test(navigator.userAgent);
             const isSolflareApp = /Solflare/i.test(navigator.userAgent);
-            if (isPhantomApp || isSolflareApp) {
-                alert('alert 1');
-                window.alert('alert 2');
-                window.alert('You are connecting via in-built browser. Due to incorrect work of the browser, some features might be unavailable. Please, use web version to get the full experience');
-                window.confirm('conform');
+            if (isPhantomApp || isSolflareApp || true) {
+                setError('You are connecting via in-built browser. Due to incorrect work of the browser, some features might be unavailable. Please, use web version to get the full experience');
             }
         }
     }, []);
@@ -95,6 +94,8 @@ const IndexPage = () => {
             ) : (
                 <BalancePage handleLogout={handleLogout}/>
             )}
+
+            {error && <ErrorModal message={error} onClose={() => setError('')}/>}
         </div>
     );
 };
