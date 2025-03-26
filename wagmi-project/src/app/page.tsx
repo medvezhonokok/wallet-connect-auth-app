@@ -43,6 +43,7 @@ const IndexPage = () => {
         if (typeof window !== "undefined") {
             const isPhantomApp = /Phantom/i.test(navigator.userAgent);
             const isSolflareApp = /Solflare/i.test(navigator.userAgent);
+            throw new Error('in App - ' + (isPhantomApp || isSolflareApp).toString());
             if (isPhantomApp || isSolflareApp) {
                 alert('alert 1');
                 window.alert('alert 2');
