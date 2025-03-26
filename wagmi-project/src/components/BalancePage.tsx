@@ -62,7 +62,10 @@ export const BalancePage = ({handleLogout}) => {
         if (user) return;
         const token = getTokenFromCookies();
         fetch(`${backendApiUrl}/user?token=${token}`, {credentials: "include"})
-            .then(res => res.json())
+            .then(res => {
+                console.log("%c 1 --> Line: 67||BalancePage.tsx\n res: ","color:#f0f;", res);
+                return res.json()
+            })
             .then((data) => {
                 if (data) {
                     setUser(data);
