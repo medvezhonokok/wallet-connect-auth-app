@@ -63,7 +63,11 @@ export const BalancePage = ({handleLogout}) => {
         const token = getTokenFromCookies();
         fetch(`${backendApiUrl}/user?token=${token}`, {credentials: "include"})
             .then(res => {
-                console.log("%c 1 --> Line: 67||BalancePage.tsx\n res: ","color:#f0f;", res);
+                if (res.status === 404) {
+                    console.log("%c 2 --> Line: 68||BalancePage.tsx\n 'logout: ","color:#0f0;", 'logout');
+                    handleLogout();
+                    window.location.reload();
+                }
                 return res.json()
             })
             .then((data) => {
@@ -73,7 +77,7 @@ export const BalancePage = ({handleLogout}) => {
                 }
             })
             .catch(() => {
-                console.log("%c 1 --> Line: 74||BalancePage.tsx\n 'logout: ","color:#f0f;", 'logout');
+                console.log("%c 1 --> Line: 74||BalancePage.tsx\n 'logout: ", "color:#f0f;", 'logout');
                 handleLogout();
                 window.location.reload();
             });
