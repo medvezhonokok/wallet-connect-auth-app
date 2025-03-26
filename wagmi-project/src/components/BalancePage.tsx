@@ -270,11 +270,10 @@ export const BalancePage = ({handleLogout}) => {
                 Hold <span className="akcent">{limits.gold} $HORN</span> → 10 attempts every 12h<br/>
             </div>
 
-            <button className="button" onClick={() => {
-                window.location.href = "https://swap.pump.fun/?input=So11111111111111111111111111111111111111112&output=6biQcSwYXPcb1DU9fNKUoem2FHHAXeFBmnnRrrdJpump";
-            }}>
+            <a className="button"
+               href="https://swap.pump.fun/?input=So11111111111111111111111111111111111111112&output=6biQcSwYXPcb1DU9fNKUoem2FHHAXeFBmnnRrrdJpump">
                 Buy on PumpSwap
-            </button>
+            </a>
             <a href={backendApiUrl} className="button">
                 Play
             </a>
@@ -284,6 +283,9 @@ export const BalancePage = ({handleLogout}) => {
             }} className="button">
                 Logout
             </button>
+            <a href="../" className="button">
+                Back to site
+            </a>
 
             <h2 style={{marginTop: 30}}>Free attempts:
             </h2>
