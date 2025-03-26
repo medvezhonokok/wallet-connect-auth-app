@@ -278,8 +278,12 @@ export const BalancePage = ({handleLogout}) => {
                 Play
             </a>
             <button onClick={() => {
-                handleLogout();
-                window.location.href = '../';
+                // handleLogout();
+                // window.location.href = '../';
+
+                handleLogout().then(() => {
+                    window.location.href = '/';
+                })
             }} className="button">
                 Logout
             </button>
