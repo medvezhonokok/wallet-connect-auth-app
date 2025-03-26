@@ -61,12 +61,21 @@ export const BalancePage = ({handleLogout}) => {
     useEffect(() => {
         if (user) return;
         const token = getTokenFromCookies();
-        fetch(`${backendApiUrl}/user?token=${token}`, {credentials: 'include'})
-            .then(res => res.json())
-            .then(data => {
-                setUser(data);
-                setSecondsLeft(timeToSeconds(data.time_update));
-            });
+        fetch(`${backendApiUrl}/user?token=${token}`, {credentials: "include"})
+            .then(async (res) => {
+                if (res.status === 404) {
+                    localStorage.removeItem('token');
+                    return;
+                }
+                return res.json();
+            })
+            .then((data) => {
+                if (data) {
+                    setUser(data);
+                    setSecondsLeft(timeToSeconds(data.time_update));
+                }
+            })
+            .catch((error) => console.error("Ошибка запроса:", error));
     }, []);
 
     useEffect(() => {
