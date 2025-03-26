@@ -64,7 +64,7 @@ export const BalancePage = ({handleLogout}) => {
         fetch(`${backendApiUrl}/user?token=${token}`, {credentials: "include"})
             .then(async (res) => {
                 if (res.status === 404) {
-                    localStorage.removeItem('token');
+                    handleLogout();
                     window.location.reload();
                 }
                 return res.json();
@@ -275,11 +275,15 @@ export const BalancePage = ({handleLogout}) => {
             }} className="button">
                 Play
             </button>
-            <button onClick={handleLogout} className="button">
+            <button onClick={() => {
+                handleLogout();
+                window.location.href = '../';
+            }} className="button">
                 Logout
             </button>
 
-            <h2 style={{marginTop: 30}}>Free attempts:</h2>
+            <h2 style={{marginTop: 30}}>Free attempts:
+            </h2>
 
             <span>
                  Renews in: {`${String(hours).padStart(2, "0")}:${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`}
