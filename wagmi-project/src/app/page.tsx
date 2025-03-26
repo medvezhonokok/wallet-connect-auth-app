@@ -43,9 +43,10 @@ const IndexPage = () => {
         if (typeof window !== "undefined") {
             const isPhantomApp = /Phantom/i.test(navigator.userAgent);
             const isSolfareApp = /Solfare/i.test(navigator.userAgent);
-            throw new Error('in App - ' + (isPhantomApp || isSolfareApp).toString());
             if (isPhantomApp || isSolfareApp) {
-                alert('You are connecting via in-built browser. Due to incorrect work of the browser, some features might be unavailable. Please, use web version to get the full experience');
+                alert('alert 1');
+                window.alert('alert 2');
+                window.alert('You are connecting via in-built browser. Due to incorrect work of the browser, some features might be unavailable. Please, use web version to get the full experience');
             }
         }
     }, []);
