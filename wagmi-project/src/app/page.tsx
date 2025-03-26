@@ -43,11 +43,11 @@ const IndexPage = () => {
         if (typeof window !== "undefined") {
             const isPhantomApp = /Phantom/i.test(navigator.userAgent);
             const isSolflareApp = /Solflare/i.test(navigator.userAgent);
-            throw new Error('in App - ' + (isPhantomApp || isSolflareApp).toString());
             if (isPhantomApp || isSolflareApp) {
                 alert('alert 1');
                 window.alert('alert 2');
                 window.alert('You are connecting via in-built browser. Due to incorrect work of the browser, some features might be unavailable. Please, use web version to get the full experience');
+                window.confirm('conform');
             }
         }
     }, []);
