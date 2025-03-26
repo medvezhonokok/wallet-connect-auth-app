@@ -285,7 +285,7 @@ export const BalancePage = ({handleLogout}) => {
                     window.location.href = '/';
                 })
             }} className="button">
-                Logout
+                Log out
             </button>
             <a href="../" className="button">
                 Back to site
