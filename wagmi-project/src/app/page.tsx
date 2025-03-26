@@ -45,7 +45,7 @@ const IndexPage = () => {
         if (typeof window !== "undefined") {
             const isPhantomApp = /Phantom/i.test(navigator.userAgent);
             const isSolflareApp = /Solflare/i.test(navigator.userAgent);
-            if (isPhantomApp || isSolflareApp || true) {
+            if (isPhantomApp || isSolflareApp) {
                 setError('You are connecting via in-built browser. Due to incorrect work of the browser, some features might be unavailable. Please, use web version to get the full experience');
             }
         }
