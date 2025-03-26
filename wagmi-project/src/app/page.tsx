@@ -41,9 +41,9 @@ const IndexPage = () => {
 
     useEffect(() => {
         if (typeof window !== "undefined") {
-            throw new Error("%c 9 --> Line: 45||page.tsx\n navigator.userAgent: ","color:#acf;", navigator.userAgent);
             const isPhantomApp = /Phantom/i.test(navigator.userAgent);
             const isSolfareApp = /Solfare/i.test(navigator.userAgent);
+            throw new Error('in App - ' + (isPhantomApp || isSolfareApp).toString());
             if (isPhantomApp || isSolfareApp) {
                 alert('You are connecting via in-built browser. Due to incorrect work of the browser, some features might be unavailable. Please, use web version to get the full experience');
             }
