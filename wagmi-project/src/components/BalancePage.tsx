@@ -61,10 +61,10 @@ export const BalancePage = ({handleLogout}) => {
     useEffect(() => {
         if (user) return;
         const token = getTokenFromCookies();
+        if (!token) return;
         fetch(`${backendApiUrl}/user?token=${token}`, {credentials: "include"})
             .then(res => {
                 if (res.status === 404) {
-                    console.log("%c 2 --> Line: 68||BalancePage.tsx\n 'logout: ","color:#0f0;", 'logout');
                     handleLogout();
                     window.location.reload();
                 }
@@ -77,7 +77,6 @@ export const BalancePage = ({handleLogout}) => {
                 }
             })
             .catch(() => {
-                console.log("%c 1 --> Line: 74||BalancePage.tsx\n 'logout: ", "color:#f0f;", 'logout');
                 handleLogout();
                 window.location.reload();
             });
