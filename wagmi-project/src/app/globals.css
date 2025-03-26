@@ -54,6 +54,9 @@ html {
     transition: background-color 0.3s ease;
     width: 300px;
     border: 5px solid #394d4a;
+    display: flex;
+    justify-content: center;
+    box-sizing: border-box;
 }
 
 .button:hover, .child_button button:hover, .input:hover {

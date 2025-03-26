@@ -212,7 +212,6 @@ export const BalancePage = ({handleLogout}) => {
     const minutes = Math.floor((secondsLeft % 3600) / 60);
     const seconds = secondsLeft % 60;
 
-
     if (!user) {
         return <div style={{
             display: 'flex',
