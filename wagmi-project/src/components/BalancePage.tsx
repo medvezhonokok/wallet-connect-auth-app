@@ -58,9 +58,10 @@ export const BalancePage = ({handleLogout}) => {
     const [repostUrl, setRepostUrl] = useState("");
     const [isValidUrl, setIsValidUrl] = useState(true);
 
+    const token = getTokenFromCookies();
+
     useEffect(() => {
         if (user) return;
-        const token = getTokenFromCookies();
         if (!token) return;
         fetch(`${backendApiUrl}/user?token=${token}`, {credentials: "include"})
             .then(res => {
@@ -80,7 +81,7 @@ export const BalancePage = ({handleLogout}) => {
                 handleLogout();
                 window.location.reload();
             });
-    }, []);
+    }, [token]);
 
     useEffect(() => {
         const fetchLimits = async () => {
