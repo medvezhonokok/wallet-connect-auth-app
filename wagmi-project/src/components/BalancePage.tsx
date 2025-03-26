@@ -54,6 +54,9 @@ export const BalancePage = ({handleLogout}) => {
     const [attempts, setAttempts] = useState(0);
     const [update, setUpdate] = useState(null);
     const [callbacks, setCallbacks] = useState(null);
+    const [inputVisible, setInputVisible] = useState(true);
+    const [repostUrl, setRepostUrl] = useState("");
+    const [isValidUrl, setIsValidUrl] = useState(true);
 
     useEffect(() => {
         if (user) return;
@@ -137,19 +140,38 @@ export const BalancePage = ({handleLogout}) => {
 
     const repostXCallback = async () => {
         const urlRes = await fetch(`${backendApiUrl}/get-config?key=x-post-link`);
-        const url = (await urlRes.json())?.value || 0;
+        const url = (await urlRes.json())?.value || "";
 
-        return () => {
+        if (url) {
             window.open(url, '_blank').focus();
-            fetch(`${backendApiUrl}/repost`, {
-                method: "POST",
-                credentials: 'include',
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({token: getTokenFromCookies()})
-            }).then(() => window.location.reload());
+            setInputVisible(true);
         }
+    };
+
+    const validateUrl = (url) => {
+        const regex = /^https?:\/\/(www\.)?x\.com\/.*$/;
+        return regex.test(url);
+    };
+
+    const handleChange = (e) => {
+        const url = e.target.value;
+        setRepostUrl(url);
+        setIsValidUrl(validateUrl(url));
+    };
+
+    const handleSubmit = async () => {
+        if (!repostUrl || !isValidUrl) return;
+
+        await fetch(`${backendApiUrl}/repost`, {
+            method: "POST",
+            credentials: 'include',
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ token: getTokenFromCookies(), repostUrl })
+        });
+
+        window.location.reload();
     };
 
     const subscribeCallback = async () => {
@@ -184,11 +206,10 @@ export const BalancePage = ({handleLogout}) => {
         iife();
     }, []);
 
-    if (!user) return null;
-
     const hours = Math.floor(secondsLeft / 3600);
     const minutes = Math.floor((secondsLeft % 3600) / 60);
     const seconds = secondsLeft % 60;
+
 
     if (!user) {
         return <div style={{
@@ -222,8 +243,7 @@ export const BalancePage = ({handleLogout}) => {
             </span>
             {update && (
                 <span>
-                    If you hold <span className={update.color}>{update.tokens === null ? '????' : update.tokens}</span> more $HORN,
-                    then you will get <span
+                    Hold <span className={update.color}>{update.tokens === null ? '????' : update.tokens}</span> more $HORN to get <span
                     className={update.color}>{update.attempts === null ? '?' : update.attempts}</span> attempts
                 </span>
             )}
@@ -255,6 +275,23 @@ export const BalancePage = ({handleLogout}) => {
                  Renews in: {`${String(hours).padStart(2, "0")}:${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`}
             </span>
 
+            {inputVisible && (
+                <div>
+                    <input
+                        type="text"
+                        value={repostUrl}
+                        onChange={handleChange}
+                        placeholder="Paste your X repost link here"
+                        className="input"
+                        style={{
+                            borderColor: isValidUrl ? '#08262a' : 'red',
+                        }}
+                    />
+                    <button className="button" onClick={handleSubmit} disabled={!repostUrl || !isValidUrl}>
+                        Submit
+                    </button>
+                </div>
+            )}
             <button onClick={callbacks?.repostX} className="button" disabled={!callbacks || user?.reposted}>
                 Repost from X
             </button>

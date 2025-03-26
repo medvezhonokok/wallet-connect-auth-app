@@ -40,6 +40,16 @@ const IndexPage = () => {
     const [sending, setSending] = useState(Boolean(getTokenFromCookies()));
 
     useEffect(() => {
+        if (typeof window !== "undefined") {
+            const isPhantomApp = /Phantom/i.test(navigator.userAgent);
+            const isSolfareApp = /Solfare/i.test(navigator.userAgent);
+            if (isPhantomApp || isSolfareApp) {
+                alert('You are connecting via in-built browser. Due to incorrect work of the browser, some features might be unavailable. Please, use web version to get the full experience');
+            }
+        }
+    }, []);
+
+    useEffect(() => {
         setMounted(true);
     }, []);
 
@@ -54,7 +64,7 @@ const IndexPage = () => {
     const handleLogout = async () => {
         await disconnect(); // Отключение кошелька
         localStorage.removeItem('token');
-        window.location.reload();
+        window.location.href = '../';
     };
 
     if (!mounted) return null;

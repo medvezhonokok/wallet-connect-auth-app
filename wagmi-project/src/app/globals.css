@@ -43,7 +43,7 @@ html {
     }
 }
 
-.button, .child_button button {
+.button, .child_button button, .input {
     border-radius: 5px;
     background-color: #08262a;
     color: white;
@@ -56,7 +56,7 @@ html {
     border: 5px solid #394d4a;
 }
 
-.button:hover, .child_button button:hover {
+.button:hover, .child_button button:hover, .input:hover {
     background-color: #0c3b40;
 }
 
