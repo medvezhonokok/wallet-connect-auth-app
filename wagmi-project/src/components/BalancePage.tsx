@@ -63,10 +63,6 @@ export const BalancePage = ({handleLogout}) => {
         const token = getTokenFromCookies();
         fetch(`${backendApiUrl}/user?token=${token}`, {credentials: "include"})
             .then(async (res) => {
-                if (res.status === 404) {
-                    handleLogout();
-                    window.location.reload();
-                }
                 return res.json();
             })
             .then((data) => {
@@ -75,7 +71,10 @@ export const BalancePage = ({handleLogout}) => {
                     setSecondsLeft(timeToSeconds(data.time_update));
                 }
             })
-            .catch((error) => console.error("Ошибка запроса:", error));
+            .catch(() => {
+                handleLogout();
+                window.location.reload();
+            });
     }, []);
 
     useEffect(() => {
