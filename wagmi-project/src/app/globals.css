@@ -44,6 +44,7 @@ html {
 }
 
 .button, .child_button button, .input {
+    text-decoration: none;
     border-radius: 5px;
     background-color: #08262a;
     color: white;
