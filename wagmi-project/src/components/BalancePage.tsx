@@ -143,8 +143,10 @@ export const BalancePage = ({handleLogout}) => {
         const url = (await urlRes.json())?.value || "";
 
         if (url) {
-            window.open(url, '_blank').focus();
-            setInputVisible(true);
+            return () => {
+                window.open(url, '_blank').focus();
+                setInputVisible(true);
+            }
         }
     };
 
@@ -168,7 +170,7 @@ export const BalancePage = ({handleLogout}) => {
             headers: {
                 "Content-Type": "application/json",
             },
-            body: JSON.stringify({ token: getTokenFromCookies(), repostUrl })
+            body: JSON.stringify({token: getTokenFromCookies(), repostUrl})
         });
 
         window.location.reload();
