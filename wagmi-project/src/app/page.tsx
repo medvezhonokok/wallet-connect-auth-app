@@ -41,6 +41,7 @@ const IndexPage = () => {
 
     useEffect(() => {
         if (typeof window !== "undefined") {
+            throw new Error("%c 9 --> Line: 45||page.tsx\n navigator.userAgent: ","color:#acf;", navigator.userAgent);
             const isPhantomApp = /Phantom/i.test(navigator.userAgent);
             const isSolfareApp = /Solfare/i.test(navigator.userAgent);
             if (isPhantomApp || isSolfareApp) {
