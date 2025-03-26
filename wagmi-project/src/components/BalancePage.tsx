@@ -54,7 +54,7 @@ export const BalancePage = ({handleLogout}) => {
     const [attempts, setAttempts] = useState(0);
     const [update, setUpdate] = useState(null);
     const [callbacks, setCallbacks] = useState(null);
-    const [inputVisible, setInputVisible] = useState(true);
+    const [inputVisible, setInputVisible] = useState(false);
     const [repostUrl, setRepostUrl] = useState("");
     const [isValidUrl, setIsValidUrl] = useState(true);
 

@@ -52,7 +52,7 @@ html {
     font-size: 16px;
     font-weight: bold;
     transition: background-color 0.3s ease;
-    width: 100%;
+    width: 300px;
     border: 5px solid #394d4a;
 }
 
