@@ -62,8 +62,8 @@ const IndexPage = () => {
     }, [mounted, connected, publicKey]);
 
     const handleLogout = async () => {
-        await disconnect(); // Отключение кошелька
         localStorage.removeItem('token');
+        await disconnect(); // Отключение кошелька
     };
 
     if (!mounted) return null;

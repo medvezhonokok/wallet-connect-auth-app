@@ -70,6 +70,7 @@ export const BalancePage = ({handleLogout}) => {
                 }
             })
             .catch(() => {
+                console.log("%c 1 --> Line: 74||BalancePage.tsx\n 'logout: ","color:#f0f;", 'logout');
                 handleLogout();
                 window.location.reload();
             });
