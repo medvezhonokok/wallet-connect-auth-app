@@ -271,6 +271,7 @@ export const BalancePage = ({handleLogout}) => {
             </div>
 
             <a className="button"
+               target="_blank"
                href="https://swap.pump.fun/?input=So11111111111111111111111111111111111111112&output=6biQcSwYXPcb1DU9fNKUoem2FHHAXeFBmnnRrrdJpump">
                 Buy on PumpSwap
             </a>
