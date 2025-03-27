@@ -275,14 +275,18 @@ export const BalancePage = ({handleLogout}) => {
                href="https://swap.pump.fun/?input=So11111111111111111111111111111111111111112&output=6biQcSwYXPcb1DU9fNKUoem2FHHAXeFBmnnRrrdJpump">
                 Buy on PumpSwap
             </a>
-            <a href={backendApiUrl} className="button">
+            <a href='/game' className="button">
                 Play
             </a>
             <button onClick={() => {
-                handleLogout();
-                window.location.href = '../';
+                // handleLogout();
+                // window.location.href = '../';
+
+                handleLogout().then(() => {
+                    window.location.href = '/';
+                })
             }} className="button">
-                Logout
+                Log out
             </button>
             <a href="../" className="button">
                 Back to site
